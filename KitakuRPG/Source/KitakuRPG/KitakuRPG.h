@@ -4,3 +4,6 @@
 
 #include "CoreMinimal.h"
 
+UPROPERTY(EditAnywhere)
+USceneComponent* OurVisibleComponent;
+
