@@ -45,7 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
 	float jump_Height = 100.0f;
 
-	//ŠÖ”
+	//ŠÖ”//
 
 	//“G‚ªƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚½
 	UFUNCTION()

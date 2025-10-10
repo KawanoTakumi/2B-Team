@@ -32,7 +32,6 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
