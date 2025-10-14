@@ -6,10 +6,10 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "MyPlayChracter.generated.h"
+#include "MyPlayCharacter.generated.h"
 
 UCLASS()
-class KITAKURPG_API AMyPlayChracter : public ACharacter
+class KITAKURPG_API AMyPlayCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -17,7 +17,7 @@ class KITAKURPG_API AMyPlayChracter : public ACharacter
 	UCameraComponent* CameraComponent;
 
 protected:
-	AMyPlayChracter();
+	AMyPlayCharacter();
 
 protected:
 	virtual void BeginPlay() override;
@@ -32,4 +32,11 @@ public:
 
 	UFUNCTION()
 	void MoveRight(float Value);
+
+	UFUNCTION()
+	void StartJump();
+
+	UFUNCTION()
+	void StopJump();
+
 };

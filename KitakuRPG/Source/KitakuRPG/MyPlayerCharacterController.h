@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "MyPlayChracter.h"
-#include "MyPlayerChracterController.generated.h"
+#include "MyPlayCharacter.h"
+#include "MyPlayerCharacterController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class KITAKURPG_API AMyPlayerChracterController : public APlayerController
+class KITAKURPG_API AMyPlayerCharacterController : public APlayerController
 {
 	GENERATED_BODY()
 	
 public:
-	AMyPlayerChracterController();
+	AMyPlayerCharacterController();
 
 protected:
-	AMyPlayChracter* m_pAMyCharacter;
+	AMyPlayCharacter* m_pAMyCharacter;
 
 protected:
 	virtual void BeginPlay() override;
@@ -27,4 +27,7 @@ protected:
 
 	void MoveForward_Axis(float axisValue);
 	void MoveRight_Axis(float axisValue);
+
+	void StartJump_Input();
+	void StopJump_Input();
 };

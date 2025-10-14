@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyPlayChracter.h"
+#include "MyPlayCharacter.h"
 
 // Sets default values
-AMyPlayChracter::AMyPlayChracter()
+AMyPlayCharacter::AMyPlayCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,35 +20,49 @@ AMyPlayChracter::AMyPlayChracter()
 }
 
 // Called when the game starts or when spawned
-void AMyPlayChracter::BeginPlay()
+void AMyPlayCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AMyPlayChracter::Tick(float DeltaTime)
+void AMyPlayCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void AMyPlayChracter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayChracter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayChracter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayCharacter::MoveRight);
+
+	PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
+	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &AMyPlayCharacter::StopJump);
+
 }
 
-void AMyPlayChracter::MoveForward(float value)
+void AMyPlayCharacter::MoveForward(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
 	AddMovementInput(Direction, value);
 }
 
-void AMyPlayChracter::MoveRight(float value)
+void AMyPlayCharacter::MoveRight(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	AddMovementInput(Direction, value);
+}
+
+void AMyPlayCharacter::StartJump()
+{
+	bPressedJump = true;
+}
+
+void AMyPlayCharacter::StopJump()
+{
+	bPressedJump = false;
 }
