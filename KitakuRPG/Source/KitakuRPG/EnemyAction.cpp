@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include"MyPlayCharacter.h"
 
 // Sets default values
 AEnemyAction::AEnemyAction()
@@ -25,13 +26,28 @@ AEnemyAction::AEnemyAction()
 void AEnemyAction::BeginPlay()
 {
 	Super::BeginPlay();
-	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDectected);
+	bCanJumpToPlayer = true;
+	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);
+	ChooseNewDirection(); // 初期方向を決定
+
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
 }
 
 // Called every frame
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	// 移動処理
+	AddMovementInput(CurrentDirection, 1.0f);
+
+	// 一定時間ごとに方向を変更
+	TimeSinceLastChange += DeltaTime;
+	if (TimeSinceLastChange >= ChangeDirectionInterval)
+	{
+		ChooseNewDirection();
+		TimeSinceLastChange = 0.0f;
+	}
+
 }
 
 // Called to bind functionality to input
@@ -41,18 +57,21 @@ void AEnemyAction::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
-void AEnemyAction::OnPlayerDectected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
+
 	if (!bCanJumpToPlayer)return;
 
 	if (!OtherActor)return;
+	UE_LOG(LogTemp, Warning, TEXT("HitPlayer"));
 
 	//プレイヤー取得
-	ACharacter* CPlayer = Cast<ACharacter>(OtherActor);
+	AMyPlayCharacter* CPlayer = Cast<AMyPlayCharacter>(OtherActor);
 	//プレイヤーを発見した場合
 	if (CPlayer)
 	{
+
 		//自身とプレイヤーの位置を設定
 		FVector EnemyLoc = GetActorLocation();
 		FVector PlayerLoc = CPlayer->GetActorLocation();
@@ -68,14 +87,39 @@ void AEnemyAction::OnPlayerDectected(UPrimitiveComponent* OverlappedComp, AActor
 		//一定時間後に再びジャンプ可能にする
 		GetWorldTimerManager().SetTimerForNextTick([this]()
 		{
-				FTimerHandle JumpTimerhandle;
-				GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
+			FTimerHandle JumpTimerhandle;
+			GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
 		});
 
 	}
+	else
+	{
+
+		//前後左右にランダムに移動する
+
+
+
+		UE_LOG(LogTemp, Warning, TEXT("Not Get To Player!"));
+	}
+
 }
 
 void AEnemyAction::ResetJump()
 {
 	bCanJumpToPlayer = true;
+}
+
+
+void AEnemyAction::ChooseNewDirection()
+{
+	// 前後左右の方向をランダムに選択
+	TArray<FVector> Directions = {
+		GetActorForwardVector(),     // 前
+		-GetActorForwardVector(),    // 後
+		GetActorRightVector(),       // 右
+		-GetActorRightVector()       // 左
+	};
+
+	int32 Index = FMath::RandRange(0, Directions.Num() - 1);
+	CurrentDirection = Directions[Index];
 }

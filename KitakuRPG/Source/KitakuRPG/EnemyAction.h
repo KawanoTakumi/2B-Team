@@ -49,10 +49,17 @@ public:
 
 	//敵がプレイヤーを見つけた時
 	UFUNCTION()
-	void OnPlayerDectected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
-	//ジャンプ解除
 	void ResetJump();
+
+private:
+	FVector CurrentDirection;
+	float ChangeDirectionInterval = 2.0f;
+	float TimeSinceLastChange = 0.0f;
+
+	void ChooseNewDirection();
+	//ジャンプ解除
 
 
 };
