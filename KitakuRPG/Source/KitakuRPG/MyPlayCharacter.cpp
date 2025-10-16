@@ -40,8 +40,8 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayCharacter::MoveRight);
 
-	PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
-	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &AMyPlayCharacter::StopJump);
+	//PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
+	//PlayerInputComponent->BindAction("StopJump", IE_Released, this, &AMyPlayCharacter::StopJump);
 
 }
 
@@ -57,12 +57,12 @@ void AMyPlayCharacter::MoveRight(float value)
 	AddMovementInput(Direction, value);
 }
 
-void AMyPlayCharacter::StartJump()
-{
-	bPressedJump = true;
-}
-
-void AMyPlayCharacter::StopJump()
-{
-	bPressedJump = false;
-}
+//void AMyPlayCharacter::StartJump()
+//{
+//	bPressedJump = true;
+//}
+//
+//void AMyPlayCharacter::StopJump()
+//{
+//	bPressedJump = false;
+//}

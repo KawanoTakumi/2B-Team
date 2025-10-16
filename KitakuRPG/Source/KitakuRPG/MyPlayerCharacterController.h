@@ -28,6 +28,6 @@ protected:
 	void MoveForward_Axis(float axisValue);
 	void MoveRight_Axis(float axisValue);
 
-	void StartJump_Input();
-	void StopJump_Input();
+	//void StartJump_Input();
+	//void StopJump_Input();
 };
