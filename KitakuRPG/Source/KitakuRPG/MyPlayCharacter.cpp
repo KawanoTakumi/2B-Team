@@ -57,12 +57,12 @@ void AMyPlayCharacter::MoveRight(float value)
 	AddMovementInput(Direction, value);
 }
 
-//void AMyPlayCharacter::StartJump()
-//{
-//	bPressedJump = true;
-//}
-//
-//void AMyPlayCharacter::StopJump()
-//{
-//	bPressedJump = false;
-//}
+void AMyPlayCharacter::StartJump()
+{
+	bPressedJump = true;
+}
+
+void AMyPlayCharacter::StopJump()
+{
+	bPressedJump = false;
+}

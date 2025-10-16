@@ -23,8 +23,8 @@ void AMyPlayerCharacterController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAxis("MoveForward", this, &AMyPlayerCharacterController::MoveForward_Axis);
-	//InputComponent->BindAction("Jump",IE_Pressed, this, &AMyPlayerCharacterController::StartJump_Input);
-	//InputComponent->BindAction("Jump",IE_Released, this, &AMyPlayerCharacterController::StopJump_Input);
+	InputComponent->BindAction("Jump",IE_Pressed, this, &AMyPlayerCharacterController::StartJump_Input);
+	InputComponent->BindAction("Jump",IE_Released, this, &AMyPlayerCharacterController::StopJump_Input);
 }
 
 void AMyPlayerCharacterController::MoveForward_Axis(float axisValue)
@@ -39,14 +39,14 @@ void AMyPlayerCharacterController::MoveRight_Axis(float axisValue)
 	m_pAMyCharacter->MoveRight(axisValue);
 }
 
-//void AMyPlayerCharacterController::StartJump_Input()
-//{
-//	check(m_pAMyCharacter != nullptr);
-//	m_pAMyCharacter->StartJump();
-//}
-//
-//void AMyPlayerCharacterController::StopJump_Input()
-//{
-//	check(m_pAMyCharacter != nullptr);
-//	m_pAMyCharacter->StopJump();
-//}
+void AMyPlayerCharacterController::StartJump_Input()
+{
+	check(m_pAMyCharacter != nullptr);
+	m_pAMyCharacter->StartJump();
+}
+
+void AMyPlayerCharacterController::StopJump_Input()
+{
+	check(m_pAMyCharacter != nullptr);
+	m_pAMyCharacter->StopJump();
+}
