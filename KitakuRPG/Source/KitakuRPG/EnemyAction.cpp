@@ -30,6 +30,8 @@ void AEnemyAction::BeginPlay()
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);
 	ChooseNewDirection(); // 初期方向を決定
 
+
+
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
 }
 
@@ -40,14 +42,17 @@ void AEnemyAction::Tick(float DeltaTime)
 	// 移動処理
 	AddMovementInput(CurrentDirection, 1.0f);
 
+	//前後左右にランダムに移動する
 	// 一定時間ごとに方向を変更
-	TimeSinceLastChange += DeltaTime;
-	if (TimeSinceLastChange >= ChangeDirectionInterval)
+	if (!bCanJumpToPlayer)
 	{
-		ChooseNewDirection();
-		TimeSinceLastChange = 0.0f;
+		TimeSinceLastChange = DeltaTime;
+		if (TimeSinceLastChange >= ChangeDirectionInterval)
+		{
+			ChooseNewDirection();
+			TimeSinceLastChange = 0.0f;
+		}
 	}
-
 }
 
 // Called to bind functionality to input
@@ -69,17 +74,19 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 	//プレイヤー取得
 	AMyPlayCharacter* CPlayer = Cast<AMyPlayCharacter>(OtherActor);
 	//プレイヤーを発見した場合
-	if (CPlayer)
+	if (CPlayer && bCanJumpToPlayer)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("CheckHitPlayer"));
+
 
 		//自身とプレイヤーの位置を設定
 		FVector EnemyLoc = GetActorLocation();
 		FVector PlayerLoc = CPlayer->GetActorLocation();
-		FVector Direction = (EnemyLoc - PlayerLoc).GetSafeNormal();
+		FVector Direction = (PlayerLoc - EnemyLoc).GetSafeNormal();
 
 		//取得したベクトルからジャンプする方向に発射
-		FVector LaunchVelocity = Direction * jump_Power;
-		LaunchVelocity.Z = jump_Height;
+		FVector LaunchVelocity = (Direction) * jump_Power * 5;
+		LaunchVelocity.Z = jump_Height* 3;
 		LaunchCharacter(LaunchVelocity, true, true);
 
 		bCanJumpToPlayer = false;
@@ -90,15 +97,9 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 			FTimerHandle JumpTimerhandle;
 			GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
 		});
-
 	}
 	else
 	{
-
-		//前後左右にランダムに移動する
-
-
-
 		UE_LOG(LogTemp, Warning, TEXT("Not Get To Player!"));
 	}
 
@@ -108,7 +109,6 @@ void AEnemyAction::ResetJump()
 {
 	bCanJumpToPlayer = true;
 }
-
 
 void AEnemyAction::ChooseNewDirection()
 {

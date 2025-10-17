@@ -39,4 +39,8 @@ public:
 	UFUNCTION()
 	void StopJump();
 
+	//ƒ}ƒEƒXXŽ²‰ñ“]
+	UFUNCTION()
+	void MTurn(float value);
+
 };

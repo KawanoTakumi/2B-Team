@@ -17,6 +17,7 @@ AMyPlayCharacter::AMyPlayCharacter()
 	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 
 	CameraComponent->bUsePawnControlRotation = true;
+
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +41,8 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayCharacter::MoveRight);
 
+	//マウスの視点移動バインド
+	PlayerInputComponent->BindAxis("Turn", this, &AMyPlayCharacter::MTurn);
 	//PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
 	//PlayerInputComponent->BindAction("StopJump", IE_Released, this, &AMyPlayCharacter::StopJump);
 
@@ -65,4 +68,11 @@ void AMyPlayCharacter::StartJump()
 void AMyPlayCharacter::StopJump()
 {
 	bPressedJump = false;
+}
+
+//マウスX軸視点移動
+void AMyPlayCharacter::MTurn(float value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("turn"));
+	AddControllerYawInput(value);
 }

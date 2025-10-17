@@ -35,15 +35,15 @@ public:
 
 	//ジャンプのクールダウン時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
-	float jump_Cooldown = 3.0f;
+	float jump_Cooldown = 5.0f;
 
 	//ジャンプの強さ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
-	float jump_Power = 100.0f;
+	float jump_Power = 500.0f;
 
 	//ジャンプの高さ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
-	float jump_Height = 100.0f;
+	float jump_Height = 400.0f;
 
 	//関数//
 
@@ -59,7 +59,5 @@ private:
 	float TimeSinceLastChange = 0.0f;
 
 	void ChooseNewDirection();
-	//ジャンプ解除
-
 
 };
