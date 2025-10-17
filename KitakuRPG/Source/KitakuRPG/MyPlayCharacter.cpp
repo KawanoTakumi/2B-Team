@@ -43,6 +43,7 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	//マウスの視点移動バインド
 	PlayerInputComponent->BindAxis("Turn", this, &AMyPlayCharacter::MTurn);
+	PlayerInputComponent->BindAxis("LookUp", this, &AMyPlayCharacter::MLookUp);
 	//PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
 	//PlayerInputComponent->BindAction("StopJump", IE_Released, this, &AMyPlayCharacter::StopJump);
 
@@ -73,6 +74,10 @@ void AMyPlayCharacter::StopJump()
 //マウスX軸視点移動
 void AMyPlayCharacter::MTurn(float value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("turn"));
 	AddControllerYawInput(value);
+}
+//マウスY軸視点移動
+void AMyPlayCharacter::MLookUp(float value)
+{
+	AddControllerPitchInput(value);
 }

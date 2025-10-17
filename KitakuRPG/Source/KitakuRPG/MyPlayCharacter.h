@@ -42,5 +42,6 @@ public:
 	//ƒ}ƒEƒXXŽ²‰ñ“]
 	UFUNCTION()
 	void MTurn(float value);
-
+	UFUNCTION()
+	void MLookUp(float value);
 };
