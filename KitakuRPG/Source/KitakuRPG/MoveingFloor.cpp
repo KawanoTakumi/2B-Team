@@ -8,17 +8,22 @@ AMoveingFloor::AMoveingFloor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+    PlatformMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformMesh"));
+    RootComponent = PlatformMesh;
+
+    MovementDirection = FVector(1.0f, 0.0f, 0.0f); // デフォルトはX方向
+    MovementSpeed = 100.0f;
+    MaxDistance = 500.0f;
+    bMovingForward = true;
+
 }
 
 // Called when the game starts or when spawned
 void AMoveingFloor::BeginPlay()
 {
-	Super::BeginPlay();
-    StaticMesh->S
-
-	//最初の位置を取得
-    ActorPos = GetActorLocation();
-	NewPos = ActorPos;
+    Super::BeginPlay();
+    StartLocation = GetActorLocation();
+    TraveledDistance = 0.0f;
 }
 
 // Called every frame
@@ -26,16 +31,15 @@ void AMoveingFloor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
     FVector CurrentLocation = GetActorLocation();
-    FVector Destination = bMovingToTarget ? MovePos : ActorPos;
+    FVector DeltaMove = MovementDirection.GetSafeNormal() * MovementSpeed * DeltaTime;
 
-    FVector Direction = (Destination - CurrentLocation).GetSafeNormal();
-    FVector NewLocation = CurrentLocation + Direction * MovePos * DeltaTime;
-
-    SetActorLocation(NewLocation);
-
-    float DistanceToTarget = FVector::Dist(NewLocation, Destination);
-    if (DistanceToTarget < 10.f)
+    if (TraveledDistance >= MaxDistance)
     {
-        bMovingToTarget = !bMovingToTarget;
+        bMovingForward = !bMovingForward;
+        TraveledDistance = 0.0f;
     }
+
+    FVector Move = bMovingForward ? DeltaMove : -DeltaMove;
+    SetActorLocation(CurrentLocation + Move);
+    TraveledDistance += Move.Size();
 }
