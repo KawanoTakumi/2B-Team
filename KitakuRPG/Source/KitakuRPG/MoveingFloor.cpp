@@ -24,6 +24,31 @@ void AMoveingFloor::BeginPlay()
     Super::BeginPlay();
     StartLocation = GetActorLocation();
     TraveledDistance = 0.0f;
+    // 動作範囲の終点を計算
+    FVector EndLocation = StartLocation + MovementDirection.GetSafeNormal() * MaxDistance;
+
+    // デバッグラインを表示（赤色、10秒間）
+    DrawDebugLine(
+        GetWorld(),
+        StartLocation,
+        EndLocation,
+        FColor::Red,
+        true, // 永続表示
+        10.0f,
+        0,
+        5.0f // 太さ
+    );
+
+    // 終点にデバッグボックスを表示
+    DrawDebugBox(
+        GetWorld(),
+        EndLocation,
+        FVector(20.0f), // サイズ
+        FColor::Green,
+        true,
+        10.0f
+    );
+
 }
 
 // Called every frame
