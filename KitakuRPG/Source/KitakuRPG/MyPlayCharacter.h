@@ -22,10 +22,15 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//初期位置
+	FVector startPos;
+	
 
 	UFUNCTION()
 	void MoveForward(float value);
@@ -42,6 +47,13 @@ public:
 	//マウスX軸回転
 	UFUNCTION()
 	void MTurn(float value);
+	//マウスY軸回転
 	UFUNCTION()
 	void MLookUp(float value);
+	//触れたアクタを取得
+	UFUNCTION()
+	void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
 };

@@ -2,7 +2,8 @@
 
 
 #include "MyPlayCharacter.h"
-
+#include "Components/SphereComponent.h"//球体作成に必要
+#include "GameFramework/Character.h"
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
 {
@@ -24,13 +25,26 @@ AMyPlayCharacter::AMyPlayCharacter()
 void AMyPlayCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	startPos = GetActorLocation();//最初の位置を取得
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayCharacter::OnCapsuleBeginOverlap);
 }
 
 // Called every frame
 void AMyPlayCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+//アクタを取得
+void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//水の場合
+	if (OtherActor && OtherActor->ActorHasTag("Water"))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Waterに触れました！初期位置に戻します"));
+		SetActorLocation(startPos);
+	}
 
 }
 
