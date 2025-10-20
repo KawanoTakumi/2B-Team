@@ -23,17 +23,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//メッシュ
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMesh* StaticMesh;
-	//移動速度
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Value")
-	float moveSpeed = 3.0f;
-	//移動距離
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Value")
-	FVector MovePos{200.0f,0.0f,0.0f};
+    // スタティックメッシュ（ブループリントで設定可能）
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform")
+    UStaticMeshComponent* PlatformMesh;
 
-	bool bMovingToTarget;
-	FVector ActorPos;
-	FVector NewPos;
+    // 移動方向（X/Y/Z）
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform")
+    FVector MovementDirection;
+
+    // 移動速度
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform")
+    float MovementSpeed;
+
+    // 移動距離の最大値
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform")
+    float MaxDistance;
+
+private:
+    FVector StartLocation;
+    float TraveledDistance;
+    bool bMovingForward;
 };
