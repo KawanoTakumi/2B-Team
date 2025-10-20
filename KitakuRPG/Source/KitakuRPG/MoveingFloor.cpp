@@ -14,7 +14,6 @@ AMoveingFloor::AMoveingFloor()
 void AMoveingFloor::BeginPlay()
 {
 	Super::BeginPlay();
-    StaticMesh->S
 
 	//Å‰‚ÌˆÊ’u‚ðŽæ“¾
     ActorPos = GetActorLocation();
