@@ -17,7 +17,6 @@ AMyPlayCharacter::AMyPlayCharacter()
 	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 
 	CameraComponent->bUsePawnControlRotation = true;
-	this->bUseControllerRotationPitch = true;
 
 }
 
