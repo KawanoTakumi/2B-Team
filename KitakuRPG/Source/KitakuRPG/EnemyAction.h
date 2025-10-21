@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "EnemyAction.generated.h"
 
+
 UCLASS()
 class KITAKURPG_API AEnemyAction : public ACharacter
 {
@@ -25,6 +26,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 
 	//索敵範囲用スフィアの設定
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
@@ -60,4 +62,16 @@ private:
 
 	void ChooseNewDirection();
 
+};
+
+//敵のIDを設定
+UENUM(BlueprintType)
+enum class EnemyID : uint8
+{
+	Slime      UMETA(DisplayName = "Slime"),
+	Wolf       UMETA(DisplayName = "Wolf"),
+	B_Slime    UMETA(DisplayName = "Boss_Slime"),
+
+
+	HiddenOne UMETA(Hidden)  // Blueprint上では非表示
 };
