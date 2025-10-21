@@ -4,6 +4,7 @@
 #include "MyPlayCharacter.h"
 #include "Components/SphereComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
 {
@@ -47,15 +48,17 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	//プレイヤー移動
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayCharacter::MoveRight);
 
 	//マウスの視点移動バインド
 	PlayerInputComponent->BindAxis("Turn", this, &AMyPlayCharacter::MTurn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMyPlayCharacter::MLookUp);
-	//PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
-	//PlayerInputComponent->BindAction("StopJump", IE_Released, this, &AMyPlayCharacter::StopJump);
 
+	//プレイヤー攻撃
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyPlayCharacter::Attack);
 }
 
 void AMyPlayCharacter::MoveForward(float value)
@@ -107,4 +110,33 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 		torchCount++;
 		OtherActor->Destroy();//拾ったら削除する
 	}
+}
+
+void AMyPlayCharacter::Attack()
+{
+	//攻撃アニメーションを再生
+	if (AttackMontage && GetMesh() && GetMesh()->GetAnimInstance())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+	}
+
+	//攻撃範囲の判定
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector End = Start + ForwardVector * 200.0f; //200ユニット前方
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this); //自分自身は無視
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
+		End, ECC_Pawn, Params);
+
+	if (bHit && HitResult.GetActor())
+	{
+		//敵にダメージを与える
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 10.0f,
+			GetController(), this, UDamageType::StaticClass());
+	}
+
 }
