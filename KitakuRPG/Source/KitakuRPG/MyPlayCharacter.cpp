@@ -1,8 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MyPlayCharacter.h"
-#include "Components/SphereComponent.h"//���̍쐬�ɕK�v
+#include "Components/SphereComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
@@ -25,7 +25,7 @@ AMyPlayCharacter::AMyPlayCharacter()
 void AMyPlayCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	startPos = GetActorLocation();//�ŏ��̈ʒu���擾
+	startPos = GetActorLocation();//最初の位置を取得
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayCharacter::OnCapsuleBeginOverlap);
 }
 
@@ -33,6 +33,13 @@ void AMyPlayCharacter::BeginPlay()
 void AMyPlayCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	FRotator ControlRot = GetControlRotation();
+
+	// ピッチ角度を -30 〜 +30 に制限
+	ControlRot.Pitch = FMath::ClampAngle(ControlRot.Pitch, -10.0f, 10.0f);
+
+	// 制限した回転を適用
+	GetController()->SetControlRotation(ControlRot);
 
 }
 
@@ -43,7 +50,7 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayCharacter::MoveRight);
 
-	//�}�E�X�̎��_�ړ��o�C���h
+	//マウスの視点移動バインド
 	PlayerInputComponent->BindAxis("Turn", this, &AMyPlayCharacter::MTurn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMyPlayCharacter::MLookUp);
 	//PlayerInputComponent->BindAction("StartJump", IE_Pressed, this, &AMyPlayCharacter::StartJump);
@@ -73,31 +80,31 @@ void AMyPlayCharacter::StopJump()
 	bPressedJump = false;
 }
 
-//�}�E�XX�����_�ړ�
+//マウスX軸視点移動
 void AMyPlayCharacter::MTurn(float value)
 {
 	AddControllerYawInput(value);
 }
-//�}�E�XY�����_�ړ�
+//マウスY軸視点移動
 void AMyPlayCharacter::MLookUp(float value)
 {
 	AddControllerPitchInput(value);
 }
-//�A�N�^���擾
+//アクタを取得
 void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
-		//���̏ꍇ
-		UE_LOG(LogTemp, Warning, TEXT("Water�ɐG��܂����I�����ʒu�ɖ߂��܂�"));
+		//水の場合
+		UE_LOG(LogTemp, Warning, TEXT("Waterに触れました！初期位置に戻します"));
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
 	{
-		//�����܂̏ꍇ
+		//たいまつの場合
 		torchCount++;
-		OtherActor->Destroy();//�E������폜����
+		OtherActor->Destroy();//拾ったら削除する
 	}
 }
