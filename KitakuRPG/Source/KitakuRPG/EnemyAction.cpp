@@ -20,6 +20,18 @@ AEnemyAction::AEnemyAction()
 	detectionSphere->SetSphereRadius(500.0f);
 	detectionSphere->SetCollisionProfileName(TEXT("Trigger"));
 
+	
+	if (this->ActorHasTag("Slime"))
+	{
+		//スライムの場合
+	}
+	else if (this->ActorHasTag("Wolf"))
+	{
+		//オオカミの場合
+
+
+	}
+
 }
 
 // Called when the game starts or when spawned
