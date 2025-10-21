@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CharacterStatusData.h"
 #include "Components/ActorComponent.h"
 #include "StatusComponent.generated.h"
 
@@ -25,8 +24,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere, Category = "STATUS")
-	UCharacterStatusData* StatusData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "STATUS")
+	class UCharacterStatusData* StatusData;
 
 
 	//ì«Ç›çûÇ‹ÇÍÇΩç≈ëÂëÃóÕ

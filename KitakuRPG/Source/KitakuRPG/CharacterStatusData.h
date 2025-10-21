@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class KITAKURPG_API UCharacterStatusData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
