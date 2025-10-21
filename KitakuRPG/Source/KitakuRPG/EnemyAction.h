@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "EnemyAction.generated.h"
 
-
 UCLASS()
 class KITAKURPG_API AEnemyAction : public ACharacter
 {
@@ -19,7 +18,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,7 +31,9 @@ public:
 	class USphereComponent* detectionSphere;
 
 	//ジャンプできるかどうか（クールダウン判定）
-	bool bCanJumpToPlayer = false;
+	bool CanJumpToPlayer = false;
+	//ダッシュできるかどうか(クールダウン判定)
+	bool CanDashToPlayer = false;
 
 	//ジャンプのクールダウン時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
@@ -49,29 +49,16 @@ public:
 
 	//関数//
 
-	//敵がプレイヤーを見つけた時
+	//敵がプレイヤーを見つけた時んほ行動
 	UFUNCTION()
 	void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
 	void ResetJump();
-
+	//移動している方向を前として角度を回転させる
 private:
 	FVector CurrentDirection;
 	float ChangeDirectionInterval = 2.0f;
 	float TimeSinceLastChange = 0.0f;
-
+	
 	void ChooseNewDirection();
-
-};
-
-//敵のIDを設定
-UENUM(BlueprintType)
-enum class EnemyID : uint8
-{
-	Slime      UMETA(DisplayName = "Slime"),
-	Wolf       UMETA(DisplayName = "Wolf"),
-	B_Slime    UMETA(DisplayName = "Boss_Slime"),
-
-
-	HiddenOne UMETA(Hidden)  // Blueprint上では非表示
 };
