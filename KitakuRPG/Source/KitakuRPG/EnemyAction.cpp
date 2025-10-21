@@ -28,7 +28,7 @@ void AEnemyAction::BeginPlay()
 {
 	Super::BeginPlay();
 	CanJumpToPlayer = true;
-	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);
+	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
 	ChooseNewDirection(); // ‰Šú•ûŒü‚ğŒˆ’è
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
 }
@@ -49,6 +49,16 @@ void AEnemyAction::Tick(float DeltaTime)
 			TimeSinceLastChange = 0.0f;
 		}
 	}
+	//ˆÚ“®‚µ‚Ä‚¢‚é•ûŒü‚ğ‘O‚Æ‚µ‚Ä‰ñ“]‚³‚¹‚é
+	FVector Velocity = GetVelocity();
+	if (!Velocity.IsNearlyZero())
+	{
+		FRotator TargetRotation = Velocity.Rotation();
+		TargetRotation.Pitch = 0.0f;
+		TargetRotation.Roll = 0.0f;
+		SetActorRotation(TargetRotation);
+	}
+
 }
 
 // Called to bind functionality to input
