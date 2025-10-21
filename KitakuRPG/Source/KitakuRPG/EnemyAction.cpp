@@ -9,6 +9,7 @@
 #include "TimerManager.h"
 #include"MyPlayCharacter.h"
 
+
 // Sets default values
 AEnemyAction::AEnemyAction()
 {
@@ -20,30 +21,15 @@ AEnemyAction::AEnemyAction()
 	detectionSphere->SetSphereRadius(500.0f);
 	detectionSphere->SetCollisionProfileName(TEXT("Trigger"));
 
-	
-	if (this->ActorHasTag("Slime"))
-	{
-		//スライムの場合
-	}
-	else if (this->ActorHasTag("Wolf"))
-	{
-		//オオカミの場合
-
-
-	}
-
 }
 
 // Called when the game starts or when spawned
 void AEnemyAction::BeginPlay()
 {
 	Super::BeginPlay();
-	bCanJumpToPlayer = true;
-	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);
+	CanJumpToPlayer = true;
+	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
 	ChooseNewDirection(); // 初期方向を決定
-
-
-
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
 }
 
@@ -51,12 +37,10 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// 移動処理
-	AddMovementInput(CurrentDirection, 1.0f);
 
 	//前後左右にランダムに移動する
 	// 一定時間ごとに方向を変更
-	if (!bCanJumpToPlayer)
+	if (!CanJumpToPlayer)
 	{
 		TimeSinceLastChange = DeltaTime;
 		if (TimeSinceLastChange >= ChangeDirectionInterval)
@@ -65,6 +49,16 @@ void AEnemyAction::Tick(float DeltaTime)
 			TimeSinceLastChange = 0.0f;
 		}
 	}
+	//移動している方向を前として回転させる
+	FVector Velocity = GetVelocity();
+	if (!Velocity.IsNearlyZero())
+	{
+		FRotator TargetRotation = Velocity.Rotation();
+		TargetRotation.Pitch = 0.0f;
+		TargetRotation.Roll = 0.0f;
+		SetActorRotation(TargetRotation);
+	}
+
 }
 
 // Called to bind functionality to input
@@ -78,48 +72,42 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 	bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	if (!bCanJumpToPlayer)return;
-
 	if (!OtherActor)return;
-	UE_LOG(LogTemp, Warning, TEXT("HitPlayer"));
 
 	//プレイヤー取得
 	AMyPlayCharacter* CPlayer = Cast<AMyPlayCharacter>(OtherActor);
 	//プレイヤーを発見した場合
-	if (CPlayer && bCanJumpToPlayer)
+	if (CPlayer)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CheckHitPlayer"));
-
-
 		//自身とプレイヤーの位置を設定
 		FVector EnemyLoc = GetActorLocation();
 		FVector PlayerLoc = CPlayer->GetActorLocation();
 		FVector Direction = (PlayerLoc - EnemyLoc).GetSafeNormal();
 
+		if (!CanJumpToPlayer)return;
 		//取得したベクトルからジャンプする方向に発射
-		FVector LaunchVelocity = (Direction) * jump_Power * 5;
-		LaunchVelocity.Z = jump_Height* 3;
+		FVector LaunchVelocity = (Direction)*jump_Power * 5;
+		LaunchVelocity.Z = jump_Height * 3;
 		LaunchCharacter(LaunchVelocity, true, true);
 
-		bCanJumpToPlayer = false;
-		
+		CanJumpToPlayer = false;
+
 		//一定時間後に再びジャンプ可能にする
 		GetWorldTimerManager().SetTimerForNextTick([this]()
-		{
-			FTimerHandle JumpTimerhandle;
-			GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
-		});
+			{
+				FTimerHandle JumpTimerhandle;
+				GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
+			});
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Get To Player!"));
+		UE_LOG(LogTemp, Warning, TEXT("Not Search Player"));
 	}
-
 }
 
 void AEnemyAction::ResetJump()
 {
-	bCanJumpToPlayer = true;
+	CanJumpToPlayer = true;
 }
 
 void AEnemyAction::ChooseNewDirection()
