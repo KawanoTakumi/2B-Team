@@ -29,6 +29,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//‚½‚¢‚Ü‚Â‚ÌŠ”
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ITEM")
 	int torchCount = 0;
 	//‰ŠúˆÊ’u
 	FVector startPos;

@@ -24,7 +24,7 @@ public:
 
 	//‰ó‚ê‚é‚Ü‚Å‚ÌŠÔ
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VALUE")
-	float bleakTimer = 4.0f;
+	float bleakTimer = 2.0f;
 
 	//¼–¾‚ÌÁ”ï”
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VALUE")
