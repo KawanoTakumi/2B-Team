@@ -32,12 +32,11 @@ public:
 
 	//ジャンプできるかどうか（クールダウン判定）
 	bool CanJumpToPlayer = false;
-	//ダッシュできるかどうか(クールダウン判定)
-	bool CanDashToPlayer = false;
+	
 
 	//ジャンプのクールダウン時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
-	float jump_Cooldown = 5.0f;
+	float jump_Cooldown = 15.0f;
 
 	//ジャンプの強さ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
@@ -48,17 +47,24 @@ public:
 	float jump_Height = 400.0f;
 
 	//関数//
-
-	//敵がプレイヤーを見つけた時んほ行動
+public:
+	//敵がプレイヤーを見つけた時行動
 	UFUNCTION()
 	void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp);
+
+
+
 	void ResetJump();
 	//移動している方向を前として角度を回転させる
 private:
-	FVector CurrentDirection;
+	FVector CurrentDirection = {0,0,0};
 	float ChangeDirectionInterval = 2.0f;
 	float TimeSinceLastChange = 0.0f;
-	
+	bool CanHitPlayer = false;//プレイヤーが当たったかどうか
 	void ChooseNewDirection();
+	class AMyPlayCharacter* CPlayer;
 };
