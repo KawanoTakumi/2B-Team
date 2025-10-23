@@ -29,14 +29,14 @@ public:
 
 
 	//“Ç‚İ‚Ü‚ê‚½Å‘å‘Ì—Í
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
 	int Read_MAX_HP;
 
 	//“Ç‚İ‚Ü‚ê‚½UŒ‚—Í
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
 	int Read_Attck;
 
 	//“Ç‚İ‚Ü‚ê‚½ˆÚ“®‘¬“x
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
 	float Read_Speed;
 };

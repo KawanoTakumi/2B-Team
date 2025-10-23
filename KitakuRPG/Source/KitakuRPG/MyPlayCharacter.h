@@ -27,12 +27,25 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//ダメージ取得
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
+
 
 	//たいまつの所持数
 	int torchCount = 0;
+
+	//ステータス
+	int P_attack;
+	int P_max_hp;
+	int P_hp;
+	float P_speed;
+	
 	//初期位置
 	FVector startPos;
 	
+	//ステータス読み込み
+	class UStatusComponent* Status;
 
 	UFUNCTION()
 	void MoveForward(float value);
