@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include"MyPlayCharacter.h"
+#include "StatusComponent.h"//ステータスコンポーネント
 
 
 // Sets default values
@@ -22,6 +23,21 @@ AEnemyAction::AEnemyAction()
 	detectionSphere->SetSphereRadius(500.0f);
 	detectionSphere->SetCollisionProfileName(TEXT("Trigger"));
 
+	//攻撃判定用の球体を作成
+	attackedSphere = CreateDefaultSubobject<USphereComponent>("AttackedSphere");
+	attackedSphere->SetupAttachment(RootComponent);
+	attackedSphere->SetSphereRadius(100.0f);
+	attackedSphere->SetCollisionProfileName(TEXT("Trigger"));
+
+	//ステータスを読み込む
+	EStatus = this->FindComponentByClass<UStatusComponent>();
+	
+	if (EStatus)
+	{
+		max_hp = EStatus->Read_MAX_HP;
+		attack = EStatus->Read_Attck;
+		speed = EStatus->Read_Speed;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -30,7 +46,7 @@ void AEnemyAction::BeginPlay()
 	Super::BeginPlay();
 	CanJumpToPlayer = true;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
-
+	E_hp = max_hp;//最大体力に設定
 	ChooseNewDirection(); // 初期方向を決定
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
 }
@@ -104,6 +120,19 @@ void AEnemyAction::Tick(float DeltaTime)
 
 }
 
+//ダメージ取得関数
+float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,AController* EventInstigator, AActor* DamageCauser)
+{
+
+	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	E_hp -= GetDamage;
+	if (E_hp < 0)
+	{
+		E_hp = 0;
+		this->Destroy();
+	}
+	return GetDamage;
+}
 // Called to bind functionality to input
 void AEnemyAction::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -131,6 +160,35 @@ void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActo
 void AEnemyAction::ResetJump()
 {
 	CanJumpToPlayer = true;
+}
+
+void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	bool bFromSweep, const FHitResult& SweepResult)
+{
+
+	//攻撃範囲の判定
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector End = Start + ForwardVector * 50.0f; //50ユニット前方
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this); //自分自身は無視
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
+		End, ECC_Pawn, Params);
+
+	if (bHit && HitResult.GetActor())
+	{
+		//プレイヤーなら攻撃する
+		if (HitResult.GetActor()->ActorHasTag("Player"))
+		{
+			//敵にダメージを与える
+			UGameplayStatics::ApplyDamage(HitResult.GetActor(),attack,
+				GetController(), this, UDamageType::StaticClass());
+
+		}
+	}
 }
 
 void AEnemyAction::ChooseNewDirection()

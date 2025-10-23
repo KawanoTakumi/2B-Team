@@ -25,10 +25,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//ダメージ取得
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
+
 
 	//索敵範囲用スフィアの設定
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
 	class USphereComponent* detectionSphere;
+
+	//攻撃判定用スフィアの設定
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
+	class USphereComponent* attackedSphere;
 
 	//ジャンプできるかどうか（クールダウン判定）
 	bool CanJumpToPlayer = false;
@@ -55,8 +63,9 @@ public:
 	UFUNCTION()
 	void OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp);
-
-
+	UFUNCTION()
+	void Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
 
 	void ResetJump();
 	//移動している方向を前として角度を回転させる
@@ -67,4 +76,11 @@ private:
 	bool CanHitPlayer = false;//プレイヤーが当たったかどうか
 	void ChooseNewDirection();
 	class AMyPlayCharacter* CPlayer;
+	class UStatusComponent* EStatus;
+
+	//ステータス（独立）
+	int max_hp;
+	int E_hp;
+	int attack;
+	float speed;
 };

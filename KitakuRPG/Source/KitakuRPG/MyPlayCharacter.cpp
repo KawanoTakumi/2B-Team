@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "StatusComponent.h"
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
 {
@@ -28,6 +29,16 @@ void AMyPlayCharacter::BeginPlay()
 	Super::BeginPlay();
 	startPos = GetActorLocation();//最初の位置を取得
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayCharacter::OnCapsuleBeginOverlap);
+
+	Status = this->FindComponentByClass<UStatusComponent>();
+
+	//ステータス読み込み
+	if (Status)
+	{
+		P_attack = Status->Read_Attck;
+		P_max_hp = Status->Read_MAX_HP;
+		P_speed = Status->Read_Speed;
+	}
 }
 
 // Called every frame
@@ -42,6 +53,22 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	// 制限した回転を適用
 	GetController()->SetControlRotation(ControlRot);
 
+}
+
+//ダメージ取得関数
+float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+
+	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (P_hp < 0)
+	{
+		P_hp = 100;
+		//いったん初期地に戻す
+		SetActorLocation(startPos);
+	}
+	P_hp -= GetDamage;
+	return GetDamage;
 }
 
 // Called to bind functionality to input
@@ -100,8 +127,6 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
-		//水の場合
-		UE_LOG(LogTemp, Warning, TEXT("Waterに触れました！初期位置に戻します"));
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
@@ -135,8 +160,7 @@ void AMyPlayCharacter::Attack()
 	if (bHit && HitResult.GetActor())
 	{
 		//敵にダメージを与える
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 10.0f,
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(),P_attack,
 			GetController(), this, UDamageType::StaticClass());
 	}
-
 }
