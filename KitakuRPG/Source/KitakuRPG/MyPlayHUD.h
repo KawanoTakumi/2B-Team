@@ -15,4 +15,14 @@ class KITAKURPG_API AMyPlayHUD : public AHUD
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void BeginPlay() override;
+
+	UPROPERTY(editDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> MyUserWidgetClass;
+
+	UPROPERTY()
+	UMyUserWidget* MyUserWidgetInstance;
+
+	void UpdateHPBar(float CurrentHP, float MaxHP);
 };
