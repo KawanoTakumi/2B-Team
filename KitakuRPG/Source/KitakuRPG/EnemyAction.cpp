@@ -13,6 +13,7 @@
 // Sets default values
 AEnemyAction::AEnemyAction()
 {
+	CurrentDirection = { 0,0,0 };
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//索敵用の球体を作成
@@ -29,7 +30,6 @@ void AEnemyAction::BeginPlay()
 	Super::BeginPlay();
 	CanJumpToPlayer = true;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
-	detectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyAction::OnPlayerEnded);
 
 	ChooseNewDirection(); // 初期方向を決定
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
@@ -42,6 +42,12 @@ void AEnemyAction::Tick(float DeltaTime)
 
 	if (CanHitPlayer)
 	{
+		if (!CPlayer)
+		{
+			//nullだった場合
+			UE_LOG(LogTemp, Warning, TEXT("プレイヤーが見つかりません！！"));
+			return;
+		}
 		//プレイヤーを発見した場合
 		if (CPlayer)
 		{
@@ -75,22 +81,23 @@ void AEnemyAction::Tick(float DeltaTime)
 	{
 		//前後左右にランダムに移動する
 // 一定時間ごとに方向を変更
-		TimeSinceLastChange++;
-		if (TimeSinceLastChange >= ChangeDirectionInterval)
+		if (!CanJumpToPlayer)
 		{
-			ChooseNewDirection();
-			TimeSinceLastChange = 0.0f;
+			TimeSinceLastChange = DeltaTime;
+			if (TimeSinceLastChange >= ChangeDirectionInterval)
+			{
+				ChooseNewDirection();
+				TimeSinceLastChange = 0.0f;
+			}
 		}
 		//移動している方向を前として回転させる
 		FVector Velocity = GetVelocity();
-		FRotator TargetRotation = Velocity.Rotation();
-		TargetRotation.Pitch = 0.0f;
-		TargetRotation.Roll = 0.0f;
-		SetActorRotation(TargetRotation);
-
 		if (!Velocity.IsNearlyZero())
 		{
-
+			FRotator TargetRotation = Velocity.Rotation();
+			TargetRotation.Pitch = 0.0f;
+			TargetRotation.Roll = 0.0f;
+			SetActorRotation(TargetRotation);
 		}
 
 	}
@@ -115,7 +122,7 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 
 }
 void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+	UPrimitiveComponent* OtherComp)
 {
 	if (!OtherActor)return;
 	CanHitPlayer = false;

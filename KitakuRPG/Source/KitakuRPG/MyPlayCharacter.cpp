@@ -36,7 +36,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FRotator ControlRot = GetControlRotation();
 
-	// ピッチ制限
+	// ピッチ角度を -30 〜 +30 に制限
 	ControlRot.Pitch = FMath::ClampAngle(ControlRot.Pitch, -10.0f, 10.0f);
 
 	// 制限した回転を適用
@@ -101,12 +101,13 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
 		//水の場合
+		UE_LOG(LogTemp, Warning, TEXT("Waterに触れました！初期位置に戻します"));
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
 	{
 		//たいまつの場合
-		torchCount+= 1;
+		torchCount++;
 		OtherActor->Destroy();//拾ったら削除する
 	}
 }
