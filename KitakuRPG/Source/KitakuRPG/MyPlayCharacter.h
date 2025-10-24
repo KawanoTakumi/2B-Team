@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "MyPlayHUD.h"
 #include "MyPlayCharacter.generated.h"
 
 UCLASS()
@@ -73,10 +74,12 @@ public:
 	//çUåÇ
 	UFUNCTION()
 	void Attack();
+	//É_ÉÅÅ[ÉWéÊìæ
+	UFUNCTION()
+	void GetDamage(int damage);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WIDGET")
-	class AMyPlayHUD* HUDwidget;
+	AMyPlayHUD* HUDwidget;
 };

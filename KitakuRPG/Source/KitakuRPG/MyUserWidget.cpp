@@ -9,10 +9,9 @@ void UMyUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	HPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar_Front")));
+	HPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
 
 }
-
  void UMyUserWidget::SetHPPercent(float Per)
 {
 	if (HPBar)

@@ -33,24 +33,25 @@ AEnemyAction::AEnemyAction()
 	//ステータスを読み込む
 	EStatus = this->FindComponentByClass<UStatusComponent>();
 	
-	if (EStatus)
-	{
-		max_hp = EStatus->Read_MAX_HP;
-		attack = EStatus->Read_Attck;
-		speed = EStatus->Read_Speed;
-	}
 }
 
 // Called when the game starts or when spawned
 void AEnemyAction::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (EStatus)
+	{
+		max_hp = EStatus->Read_MAX_HP;
+		attack = EStatus->Read_Attck;
+		speed = EStatus->Read_Speed;
+	}
+
 	CanJumpToPlayer = true;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
 	attackedSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::Attacked);
 	E_hp = max_hp;//最大体力に設定
 	ChooseNewDirection(); // 初期方向を決定
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
 }
 
 // Called every frame
@@ -93,10 +94,6 @@ void AEnemyAction::Tick(float DeltaTime)
 					GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
 				});
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not Search Player"));
-		}
 
 	}
 	else
@@ -129,8 +126,8 @@ void AEnemyAction::Tick(float DeltaTime)
 //ダメージ取得関数
 float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,AController* EventInstigator, AActor* DamageCauser)
 {
-
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UE_LOG(LogTemp, Warning, TEXT("enemy has get %f"), GetDamage);
 	E_hp -= GetDamage;
 	if (E_hp < 0)
 	{
@@ -174,16 +171,15 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 {
 
 	if (!OtherActor) return;
-	UE_LOG(LogTemp, Warning, TEXT("attacked"));
 	// プレイヤーかどうか判定
 	if (OtherActor->ActorHasTag("Player"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player has entered attack sphere"));
-
-		// ダメージを与える
-		UGameplayStatics::ApplyDamage(OtherActor, attack, GetController(), this, UDamageType::StaticClass());
+		AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
+		if (TargetPlayer)
+		{
+			CPlayer->GetDamage(attack);
+		}
 	}
-	
 }
 
 void AEnemyAction::ChooseNewDirection()

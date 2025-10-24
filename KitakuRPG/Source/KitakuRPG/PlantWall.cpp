@@ -38,7 +38,7 @@ void APlantWall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("プレイヤーが当たりました"));
+		UE_LOG(LogTemp, Warning, TEXT("player hit"));
 		WallMesh->SetVisibility(false); // 壁を非表示
 		WallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 衝突も無効化
 		//タイマーが0になったらこのオブジェクトを壊す

@@ -11,20 +11,13 @@ void AMyPlayHUD::BeginPlay()
 
 	if (MyUserWidgetClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GetMyUserWidget"));
-		UE_LOG(LogTemp, Warning, TEXT("MyUserWidgetClass: %s"), *MyUserWidgetClass->GetName());
 		MyUserWidgetInstance = CreateWidget<UMyUserWidget>(GetWorld(), MyUserWidgetClass);
-		
-		if (MyUserWidgetInstance)
-		{
-			MyUserWidgetInstance->AddToViewport();
-			UE_LOG(LogTemp, Warning, TEXT("WIDGET"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not WIDGET"));
-
-		}
+		UE_LOG(LogTemp, Warning, TEXT("get user widget"));
+	}
+	if (MyUserWidgetInstance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Widget Name: %s"), *MyUserWidgetInstance->GetName());
+		MyUserWidgetInstance->AddToViewport();
 	}
 
 }

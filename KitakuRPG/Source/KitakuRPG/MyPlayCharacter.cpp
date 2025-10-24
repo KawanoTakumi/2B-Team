@@ -38,7 +38,10 @@ void AMyPlayCharacter::BeginPlay()
 		P_attack = Status->Read_Attck;
 		P_max_hp = Status->Read_MAX_HP;
 		P_speed = Status->Read_Speed;
+		P_hp = P_max_hp;
 	}
+	//HUD取得
+	HUDwidget = Cast<AMyPlayHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 // Called every frame
@@ -53,30 +56,28 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	// 制限した回転を適用
 	GetController()->SetControlRotation(ControlRot);
 
-
-
 	//HPバーを更新
-	if(HUDwidget)
-		HUDwidget->UpdateHPBar(P_hp,P_max_hp);
+	if (HUDwidget)
+	{
+		HUDwidget->UpdateHPBar(P_hp, P_max_hp);
+		UE_LOG(LogTemp, Warning, TEXT("update to hpBar can view it! / %d ll %d"),P_hp,P_max_hp);
+	}
+		
 }
 
 //ダメージ取得関数
 float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	float GetDamage = DamageAmount;
+	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UE_LOG(LogTemp, Warning, TEXT("damaged %f"), GetDamage);
 	P_hp -= GetDamage;
-	UE_LOG(LogTemp, Warning, TEXT("Player_HP"));
 	if (P_hp < 1)
 	{
 		P_hp = 1;
 		//いったん初期地に戻す
 		SetActorLocation(startPos);
 	}
-	//HPバーを更新
-	if (HUDwidget)
-		HUDwidget->UpdateHPBar(P_hp, P_max_hp);
 
 	return GetDamage;
 }
@@ -173,4 +174,11 @@ void AMyPlayCharacter::Attack()
 		UGameplayStatics::ApplyDamage(HitResult.GetActor(),P_attack,
 			GetController(), this, UDamageType::StaticClass());
 	}
+}
+//ダメージ取得(TakeDamageの代替)
+void AMyPlayCharacter::GetDamage(int damage)
+{
+	if (damage == 0)
+		damage = 1;
+	P_hp -= damage;
 }

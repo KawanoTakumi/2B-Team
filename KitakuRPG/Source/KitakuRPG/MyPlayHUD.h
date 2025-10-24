@@ -21,7 +21,7 @@ public:
 	UPROPERTY(editDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> MyUserWidgetClass;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UMyUserWidget* MyUserWidgetInstance;
 
 	void UpdateHPBar(float CurrentHP, float MaxHP);
