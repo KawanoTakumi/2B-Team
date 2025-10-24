@@ -3,13 +3,20 @@
 
 #include "MyUserWidget.h"
 #include "Components/ProgressBar.h"
+#include "MyPlayCharacter.h"
 
-void UMyUserWidget::SetHPPercent(float Percent)
+void UMyUserWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	HPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar_Front")));
+
+}
+
+ void UMyUserWidget::SetHPPercent(float Per)
 {
 	if (HPBar)
 	{
-		//0.0～1.0の範囲でHPバーを更新
-		HPBar->SetPercent(FMath::Clamp(Percent, 0.0f, 1.0f));
+		HPBar->SetPercent(FMath::Clamp(Per, 0.0f, 1.0f));
 	}
 }
-

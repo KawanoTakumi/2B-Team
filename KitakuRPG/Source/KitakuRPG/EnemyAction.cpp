@@ -9,6 +9,7 @@
 #include "TimerManager.h"
 #include"MyPlayCharacter.h"
 #include "StatusComponent.h"//ステータスコンポーネント
+#include "DrawDebugHelpers.h"
 
 
 // Sets default values
@@ -46,6 +47,7 @@ void AEnemyAction::BeginPlay()
 	Super::BeginPlay();
 	CanJumpToPlayer = true;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
+	attackedSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::Attacked);
 	E_hp = max_hp;//最大体力に設定
 	ChooseNewDirection(); // 初期方向を決定
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay: Overlap binding complete"));
@@ -55,15 +57,19 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (CanHitPlayer && CPlayer)
+	{
+		FVector Direction = (CPlayer->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		FRotator LookAtRotation = Direction.Rotation();
+		LookAtRotation.Pitch = 0.0f;
+		LookAtRotation.Roll = 0.0f;
+		SetActorRotation(LookAtRotation);
+	}
 
 	if (CanHitPlayer)
 	{
-		if (!CPlayer)
-		{
-			//nullだった場合
-			UE_LOG(LogTemp, Warning, TEXT("プレイヤーが見つかりません！！"));
-			return;
-		}
+
+
 		//プレイヤーを発見した場合
 		if (CPlayer)
 		{
@@ -145,9 +151,10 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 {
 
 	if (!OtherActor)return;
-	//プレイヤー取得
+	// プレイヤー取得
 	CPlayer = Cast<AMyPlayCharacter>(OtherActor);
 	CanHitPlayer = true;
+
 
 }
 void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -162,33 +169,21 @@ void AEnemyAction::ResetJump()
 	CanJumpToPlayer = true;
 }
 
-void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-	bool bFromSweep, const FHitResult& SweepResult)
+void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	//攻撃範囲の判定
-	FVector Start = GetActorLocation();
-	FVector ForwardVector = GetActorForwardVector();
-	FVector End = Start + ForwardVector * 50.0f; //50ユニット前方
-
-	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this); //自分自身は無視
-
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
-		End, ECC_Pawn, Params);
-
-	if (bHit && HitResult.GetActor())
+	if (!OtherActor) return;
+	UE_LOG(LogTemp, Warning, TEXT("attacked"));
+	// プレイヤーかどうか判定
+	if (OtherActor->ActorHasTag("Player"))
 	{
-		//プレイヤーなら攻撃する
-		if (HitResult.GetActor()->ActorHasTag("Player"))
-		{
-			//敵にダメージを与える
-			UGameplayStatics::ApplyDamage(HitResult.GetActor(),attack,
-				GetController(), this, UDamageType::StaticClass());
+		UE_LOG(LogTemp, Warning, TEXT("Player has entered attack sphere"));
 
-		}
+		// ダメージを与える
+		UGameplayStatics::ApplyDamage(OtherActor, attack, GetController(), this, UDamageType::StaticClass());
 	}
+	
 }
 
 void AEnemyAction::ChooseNewDirection()

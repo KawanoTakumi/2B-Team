@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "StatusComponent.h"
+#include "MyPlayHUD.h"
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
 {
@@ -31,7 +32,6 @@ void AMyPlayCharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayCharacter::OnCapsuleBeginOverlap);
 
 	Status = this->FindComponentByClass<UStatusComponent>();
-
 	//ステータス読み込み
 	if (Status)
 	{
@@ -53,21 +53,31 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	// 制限した回転を適用
 	GetController()->SetControlRotation(ControlRot);
 
+
+
+	//HPバーを更新
+	if(HUDwidget)
+		HUDwidget->UpdateHPBar(P_hp,P_max_hp);
 }
 
 //ダメージ取得関数
-float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser)
 {
-
-	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	if (P_hp < 0)
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float GetDamage = DamageAmount;
+	P_hp -= GetDamage;
+	UE_LOG(LogTemp, Warning, TEXT("Player_HP"));
+	if (P_hp < 1)
 	{
-		P_hp = 100;
+		P_hp = 1;
 		//いったん初期地に戻す
 		SetActorLocation(startPos);
 	}
-	P_hp -= GetDamage;
+	//HPバーを更新
+	if (HUDwidget)
+		HUDwidget->UpdateHPBar(P_hp, P_max_hp);
+
 	return GetDamage;
 }
 

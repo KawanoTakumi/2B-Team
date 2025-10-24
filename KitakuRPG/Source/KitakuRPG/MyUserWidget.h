@@ -17,10 +17,16 @@ class KITAKURPG_API UMyUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	//プレイヤーコンポーネント
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PLAYER")
+	class AMyPlayCharacter* Player; 
+
+	float Percent = 0.0f;//体力の割合
 	//C++から呼び出せる関数
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void SetHPPercent(float Percent);
 
+	void NativeConstruct() override;
 protected:
 	//UMGのProgressBarをバインド
 	UPROPERTY(meta = (BindWidget))

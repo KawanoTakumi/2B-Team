@@ -77,5 +77,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
-	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WIDGET")
+	class AMyPlayHUD* HUDwidget;
 };
