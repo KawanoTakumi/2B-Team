@@ -37,10 +37,13 @@ public:
 	int torchCount = 0;
 
 	//ステータス
-	int P_attack;
-	int P_max_hp;
-	int P_hp;
-	float P_speed;
+	int P_attack = 1;
+	int P_max_hp = 1;
+	int P_hp = 1;
+	float P_speed = 1;
+	int P_level = 1;
+	int P_EXP = 1;
+	int P_max_EXP = 40;
 	
 	//初期位置
 	FVector startPos;
@@ -77,6 +80,14 @@ public:
 	//ダメージ取得
 	UFUNCTION()
 	void GetDamage(int damage);
+
+	//経験値獲得
+	UFUNCTION()
+	void GetEXP(int CurrentEXP);
+
+	//レベルアップ
+	UFUNCTION()
+	void LevelUp();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;

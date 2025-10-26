@@ -30,8 +30,6 @@ AEnemyAction::AEnemyAction()
 	attackedSphere->SetSphereRadius(100.0f);
 	attackedSphere->SetCollisionProfileName(TEXT("Trigger"));
 
-	//ステータスを読み込む
-	EStatus = this->FindComponentByClass<UStatusComponent>();
 	
 }
 
@@ -39,12 +37,21 @@ AEnemyAction::AEnemyAction()
 void AEnemyAction::BeginPlay()
 {
 	Super::BeginPlay();
+	//ステータスを読み込む
+	EStatus = this->FindComponentByClass<UStatusComponent>();
 
 	if (EStatus)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("get this status!"));
 		max_hp = EStatus->Read_MAX_HP;
 		attack = EStatus->Read_Attck;
 		speed = EStatus->Read_Speed;
+		exp = EStatus->Read_EXP;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT(" not get this status!"));
+
 	}
 
 	CanJumpToPlayer = true;
@@ -129,9 +136,13 @@ float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	UE_LOG(LogTemp, Warning, TEXT("enemy has get %f"), GetDamage);
 	E_hp -= GetDamage;
-	if (E_hp < 0)
+	if (E_hp < 1)
 	{
-		E_hp = 0;
+		if (CPlayer)
+		{
+			CPlayer->GetEXP(exp);
+		}
+
 		this->Destroy();
 	}
 	return GetDamage;
@@ -151,8 +162,6 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 	// プレイヤー取得
 	CPlayer = Cast<AMyPlayCharacter>(OtherActor);
 	CanHitPlayer = true;
-
-
 }
 void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp)
@@ -177,7 +186,11 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
 		if (TargetPlayer)
 		{
-			CPlayer->GetDamage(attack);
+			TargetPlayer->GetDamage(attack);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not Get to Damage"));
 		}
 	}
 }

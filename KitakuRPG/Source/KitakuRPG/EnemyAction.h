@@ -28,6 +28,8 @@ public:
 	//ダメージ取得
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;
+public:
+	class UStatusComponent* EStatus;
 
 
 	//索敵範囲用スフィアの設定
@@ -76,11 +78,11 @@ private:
 	bool CanHitPlayer = false;//プレイヤーが当たったかどうか
 	void ChooseNewDirection();
 	class AMyPlayCharacter* CPlayer;
-	class UStatusComponent* EStatus;
 
 	//ステータス（独立）
-	int max_hp;
-	int E_hp;
-	int attack;
-	float speed;
+	int max_hp;//最大体力
+	int E_hp;//体力
+	int attack;//攻撃力
+	float speed;//移動速度
+	int exp;//経験値
 };

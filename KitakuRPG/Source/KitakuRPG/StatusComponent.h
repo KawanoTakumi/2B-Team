@@ -39,4 +39,9 @@ public:
 	//“Ç‚İ‚Ü‚ê‚½ˆÚ“®‘¬“x
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
 	float Read_Speed;
+
+	//“Ç‚İ‚Ü‚ê‚½ŒoŒ±’l—Ê
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
+	int Read_EXP;
+
 };

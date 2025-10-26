@@ -62,7 +62,13 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 		HUDwidget->UpdateHPBar(P_hp, P_max_hp);
 		UE_LOG(LogTemp, Warning, TEXT("update to hpBar can view it! / %d ll %d"),P_hp,P_max_hp);
 	}
-		
+	//体力がなくなったら
+	if (P_hp < 0)
+	{
+		P_hp = 0;
+		//いったん初期地に戻す
+		SetActorLocation(startPos);
+	}
 }
 
 //ダメージ取得関数
@@ -70,14 +76,7 @@ float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	AController* EventInstigator, AActor* DamageCauser)
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	UE_LOG(LogTemp, Warning, TEXT("damaged %f"), GetDamage);
 	P_hp -= GetDamage;
-	if (P_hp < 1)
-	{
-		P_hp = 1;
-		//いったん初期地に戻す
-		SetActorLocation(startPos);
-	}
 
 	return GetDamage;
 }
@@ -98,17 +97,17 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	//プレイヤー攻撃
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyPlayCharacter::Attack);
 }
-
+//前後移動
 void AMyPlayCharacter::MoveForward(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, value);
+	AddMovementInput(Direction, value * P_speed);
 }
-
+//左右移動
 void AMyPlayCharacter::MoveRight(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, value);
+	AddMovementInput(Direction, value * P_speed);
 }
 
 void AMyPlayCharacter::StartJump()
@@ -147,7 +146,7 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 		OtherActor->Destroy();//拾ったら削除する
 	}
 }
-
+//攻撃
 void AMyPlayCharacter::Attack()
 {
 	//攻撃アニメーションを再生
@@ -178,7 +177,23 @@ void AMyPlayCharacter::Attack()
 //ダメージ取得(TakeDamageの代替)
 void AMyPlayCharacter::GetDamage(int damage)
 {
-	if (damage == 0)
-		damage = 1;
+	//攻撃力0あるいは体力0なら破棄
+	if (damage < 0 || P_hp < 0)return;
 	P_hp -= damage;
+}
+//経験値獲得
+void AMyPlayCharacter::GetEXP(int EXP)
+{
+	UE_LOG(LogTemp, Warning, TEXT("player get exp %d"),EXP);
+	P_EXP += EXP;
+	if (P_EXP > P_max_EXP)
+		LevelUp();
+}
+//レベルアップ
+void AMyPlayCharacter::LevelUp()
+{
+	UE_LOG(LogTemp, Warning, TEXT("player level up"));
+	P_level++;
+	P_EXP = 0;
+	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.2f);//次のレベルまでの最大経験値量を指定
 }

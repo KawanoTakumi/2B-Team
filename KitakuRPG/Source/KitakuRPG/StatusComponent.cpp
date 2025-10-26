@@ -30,7 +30,7 @@ void UStatusComponent::BeginPlay()
 		Read_MAX_HP = StatusData->Character_MAX_HP;
 		Read_Attck = StatusData->Character_Attack;
 		Read_Speed = StatusData->Character_Move_Speed;
-
+		Read_EXP = StatusData->Character_EXP;
 	}
 
 }

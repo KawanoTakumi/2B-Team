@@ -25,4 +25,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "STATUS")
 	float Character_Move_Speed = 1.0f;
 	
+	//ìGêÍóp
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EXP")
+	int Character_EXP = 1;
 };
