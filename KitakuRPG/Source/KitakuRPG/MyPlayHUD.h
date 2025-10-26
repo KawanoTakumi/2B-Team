@@ -25,4 +25,5 @@ public:
 	UMyUserWidget* MyUserWidgetInstance;
 
 	void UpdateHPBar(float CurrentHP, float MaxHP);
+	void UpdateLevel(int Level);
 };

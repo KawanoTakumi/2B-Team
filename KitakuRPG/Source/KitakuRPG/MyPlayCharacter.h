@@ -43,7 +43,7 @@ public:
 	float P_speed = 1;
 	int P_level = 1;
 	int P_EXP = 1;
-	int P_max_EXP = 40;
+	int P_max_EXP = 30;
 	
 	//‰ŠúˆÊ’u
 	FVector startPos;

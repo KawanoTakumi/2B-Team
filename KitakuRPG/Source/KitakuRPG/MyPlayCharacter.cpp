@@ -56,12 +56,13 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	// 制限した回転を適用
 	GetController()->SetControlRotation(ControlRot);
 
-	//HPバーを更新
+	//ウィジェット更新
 	if (HUDwidget)
 	{
 		HUDwidget->UpdateHPBar(P_hp, P_max_hp);
-		UE_LOG(LogTemp, Warning, TEXT("update to hpBar can view it! / %d ll %d"),P_hp,P_max_hp);
+		HUDwidget->UpdateLevel(P_level);
 	}
+
 	//体力がなくなったら
 	if (P_hp < 0)
 	{
@@ -184,7 +185,6 @@ void AMyPlayCharacter::GetDamage(int damage)
 //経験値獲得
 void AMyPlayCharacter::GetEXP(int EXP)
 {
-	UE_LOG(LogTemp, Warning, TEXT("player get exp %d"),EXP);
 	P_EXP += EXP;
 	if (P_EXP > P_max_EXP)
 		LevelUp();
@@ -192,7 +192,6 @@ void AMyPlayCharacter::GetEXP(int EXP)
 //レベルアップ
 void AMyPlayCharacter::LevelUp()
 {
-	UE_LOG(LogTemp, Warning, TEXT("player level up"));
 	P_level++;
 	P_EXP = 0;
 	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.2f);//次のレベルまでの最大経験値量を指定

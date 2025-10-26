@@ -12,11 +12,9 @@ void AMyPlayHUD::BeginPlay()
 	if (MyUserWidgetClass)
 	{
 		MyUserWidgetInstance = CreateWidget<UMyUserWidget>(GetWorld(), MyUserWidgetClass);
-		UE_LOG(LogTemp, Warning, TEXT("get user widget"));
 	}
 	if (MyUserWidgetInstance)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Widget Name: %s"), *MyUserWidgetInstance->GetName());
 		MyUserWidgetInstance->AddToViewport();
 	}
 
@@ -29,4 +27,10 @@ void AMyPlayHUD::UpdateHPBar(float CurrentHP, float MaxHP)
 		float Percent = CurrentHP / MaxHP;
 		MyUserWidgetInstance->SetHPPercent(Percent);
 	}
+}
+
+
+void AMyPlayHUD::UpdateLevel(int Level)
+{
+	MyUserWidgetInstance->SetLevel(Level);
 }
