@@ -7,6 +7,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "StatusComponent.h"
 #include "MyPlayHUD.h"
+#include "Blueprint/UserWidget.h"
+#include "LevelUpWidget.h"
+#include "BuffDataBase.h"
+#include "BuffEffectBase.h"
+
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
 {
@@ -195,4 +200,40 @@ void AMyPlayCharacter::LevelUp()
 	P_level++;
 	P_EXP = 0;
 	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.2f);//次のレベルまでの最大経験値量を指定
+	if (LevelWidget)
+	{
+		ULevelUpWidget* LevelUpWidget = CreateWidget<ULevelUpWidget>(GetWorld(), LevelWidget);
+
+		if (LevelUpWidget)
+		{
+			LevelUpWidget->bIsFocusable = true;
+			LevelUpWidget->AddToViewport();
+
+			APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+			if (PC)
+			{
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(LevelUpWidget->TakeWidget()); // ← フォーカス可能にする
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				PC->SetInputMode(InputMode);
+				PC->bShowMouseCursor = true;
+
+				UGameplayStatics::SetGamePaused(GetWorld(), true);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not get widget"));
+		}
+	}
+}
+
+void AMyPlayCharacter::AddBuff(UBuffDataBase* buffData)
+{
+	//nullチェック
+	if (!buffData)return;
+
+	//バフを適用
+	UBuffEffectBase* Buff = NewObject<UBuffEffectBase>(this);
+	Buff->ApplyEffect(this,buffData);
 }
