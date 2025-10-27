@@ -51,6 +51,7 @@ public:
 	//ステータス読み込み
 	class UStatusComponent* Status;
 
+
 	UFUNCTION()
 	void MoveForward(float value);
 
@@ -89,8 +90,15 @@ public:
 	UFUNCTION()
 	void LevelUp();
 
+	//バフ適用
+	UFUNCTION()
+	void AddBuff(class UBuffDataBase* BuffData);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
 	AMyPlayHUD* HUDwidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget>LevelWidget;
 };
