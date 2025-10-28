@@ -42,16 +42,11 @@ void AEnemyAction::BeginPlay()
 
 	if (EStatus)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("get this status!"));
 		max_hp = EStatus->Read_MAX_HP;
 		attack = EStatus->Read_Attck;
 		speed = EStatus->Read_Speed;
 		exp = EStatus->Read_EXP;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT(" not get this status!"));
-
+		AttackTimer = jump_Cooldown;
 	}
 
 	CanJumpToPlayer = true;
@@ -65,6 +60,15 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//攻撃のクールタイムを設定
+	if (AttackTimer > 0)
+	{
+		AttackTimer--;
+		if (AttackTimer == 0)
+			CanAttack = true;
+	}
+
+	//プレイヤーの方向を向かせる
 	if (CanHitPlayer && CPlayer)
 	{
 		FVector Direction = (CPlayer->GetActorLocation() - GetActorLocation()).GetSafeNormal();
@@ -74,10 +78,9 @@ void AEnemyAction::Tick(float DeltaTime)
 		SetActorRotation(LookAtRotation);
 	}
 
+	//プレイヤーが索敵範囲内に入れば
 	if (CanHitPlayer)
 	{
-
-
 		//プレイヤーを発見した場合
 		if (CPlayer)
 		{
@@ -103,38 +106,32 @@ void AEnemyAction::Tick(float DeltaTime)
 		}
 
 	}
-	else
-	{
-		//前後左右にランダムに移動する
+	//前後左右にランダムに移動する
 // 一定時間ごとに方向を変更
-		if (!CanJumpToPlayer)
+	if (!CanJumpToPlayer)
+	{
+		TimeSinceLastChange = DeltaTime;
+		if (TimeSinceLastChange >= ChangeDirectionInterval)
 		{
-			TimeSinceLastChange = DeltaTime;
-			if (TimeSinceLastChange >= ChangeDirectionInterval)
-			{
-				ChooseNewDirection();
-				TimeSinceLastChange = 0.0f;
-			}
+			ChooseNewDirection();
+			TimeSinceLastChange = 0.0f;
 		}
-		//移動している方向を前として回転させる
-		FVector Velocity = GetVelocity();
-		if (!Velocity.IsNearlyZero())
-		{
-			FRotator TargetRotation = Velocity.Rotation();
-			TargetRotation.Pitch = 0.0f;
-			TargetRotation.Roll = 0.0f;
-			SetActorRotation(TargetRotation);
-		}
-
 	}
-
+	//移動している方向を前として回転させる
+	FVector Velocity = GetVelocity();
+	if (!Velocity.IsNearlyZero())
+	{
+		FRotator TargetRotation = Velocity.Rotation();
+		TargetRotation.Pitch = 0.0f;
+		TargetRotation.Roll = 0.0f;
+		SetActorRotation(TargetRotation);
+	}
 }
 
 //ダメージ取得関数
 float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,AController* EventInstigator, AActor* DamageCauser)
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	UE_LOG(LogTemp, Warning, TEXT("enemy has get %f"), GetDamage);
 	E_hp -= GetDamage;
 	if (E_hp < 1)
 	{
@@ -154,6 +151,7 @@ void AEnemyAction::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+//プレイヤー索敵
 void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -163,6 +161,7 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 	CPlayer = Cast<AMyPlayCharacter>(OtherActor);
 	CanHitPlayer = true;
 }
+//プレイヤーが索敵範囲外にいった場合
 void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp)
 {
@@ -175,6 +174,7 @@ void AEnemyAction::ResetJump()
 	CanJumpToPlayer = true;
 }
 
+//攻撃
 void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -184,13 +184,12 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
-		if (TargetPlayer)
+		//プレイヤーが見つかっているかつ、ジャンプできる状態であればダメージを与える
+		if (TargetPlayer && CanAttack)
 		{
+			CanAttack = false;
 			TargetPlayer->GetDamage(attack);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not Get to Damage"));
+			
 		}
 	}
 }

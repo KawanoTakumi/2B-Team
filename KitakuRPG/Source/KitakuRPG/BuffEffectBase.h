@@ -18,6 +18,11 @@ class KITAKURPG_API UBuffEffectBase : public UObject
 	
 public:
 
+	FTimerHandle HealTimer;
+
+
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffect(AMyPlayCharacter* target,UBuffDataBase* bufftype);
+	UFUNCTION()
+	void HealTick(AMyPlayCharacter* Target);
 };

@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"//スタティックメッシュ作成に必要
 #include "Components/SphereComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
+#include "MyPlayCharacter.h"
 
 // Sets default values
 APlantWall::APlantWall()
@@ -38,15 +39,17 @@ void APlantWall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("player hit"));
-		WallMesh->SetVisibility(false); // 壁を非表示
-		WallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 衝突も無効化
-		//タイマーが0になったらこのオブジェクトを壊す
-		if(break_timer > 0)
-		break_timer--;
-		if (break_timer == 0)
+		if (OtherActor->ActorHasTag("Player"))
 		{
+			AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
+			if (TargetPlayer && TargetPlayer->torchCount > 0)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("player hit"));
+				WallMesh->SetVisibility(false); // 壁を非表示
+				WallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 衝突も無効化
+
+			}
+
 		}
-		
 	}
 }
