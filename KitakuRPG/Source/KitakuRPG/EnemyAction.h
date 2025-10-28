@@ -78,7 +78,7 @@ private:
 	bool CanHitPlayer = false;//プレイヤーが当たったかどうか
 	void ChooseNewDirection();
 	class AMyPlayCharacter* CPlayer;
-
+	bool CanAttack = false;//攻撃できるかどうか
 	//ステータス（独立）
 	int max_hp;//最大体力
 	int E_hp;//体力

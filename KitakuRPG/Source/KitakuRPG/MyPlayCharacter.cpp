@@ -68,10 +68,11 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 		HUDwidget->UpdateLevel(P_level);
 	}
 
+
 	//体力がなくなったら
 	if (P_hp < 0)
 	{
-		P_hp = 0;
+		P_hp = 50;
 		//いったん初期地に戻す
 		SetActorLocation(startPos);
 	}

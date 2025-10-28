@@ -173,6 +173,7 @@ void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActo
 void AEnemyAction::ResetJump()
 {
 	CanJumpToPlayer = true;
+	CanAttack = true;
 }
 
 void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -184,9 +185,11 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
-		if (TargetPlayer)
+		//プレイヤーが見つかっているかつ、ジャンプできる状態であればダメージを与える
+		if (TargetPlayer && CanAttack)
 		{
 			TargetPlayer->GetDamage(attack);
+			CanAttack = false;
 		}
 		else
 		{
