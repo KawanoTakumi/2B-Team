@@ -21,18 +21,19 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 	}break;
 	case EBuffType::Heal:
 	{
-		// 2秒ごとに HealTick を呼び出す
+		// 1秒ごとに HealTick を呼び出す
 		if (Target)
 		{
+			Target->heal_by_time += buffType->Value;//自然回復力を強化
 			FTimerDelegate HealDelegate;
 			HealDelegate.BindUFunction(this, FName("HealTick"), Target,buffType);
-			GetWorld()->GetTimerManager().SetTimer(HealTimer, HealDelegate, 2.0f, true);
+			GetWorld()->GetTimerManager().SetTimer(HealTimer, HealDelegate, 1.0f, true);
 		}
 	} break;
 	case EBuffType::SpeedUp:
 	{
 		//スピードアップ
-		Target->P_speed = buffType->Value;
+		Target->P_speed += buffType->Value;
 		UE_LOG(LogTemp, Warning, TEXT("Speed Up %f"), Target->P_speed);
 	}break;
 	default:
@@ -40,10 +41,10 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 	}
 }
 
-void UBuffEffectBase::HealTick(AMyPlayCharacter* Target,UBuffDataBase* Buff)
+void UBuffEffectBase::HealTick(AMyPlayCharacter* Target)
 {
 	if (!Target) return;
 
-	Target->P_hp = FMath::Clamp(Target->P_hp + Buff->Value, 0.0f, Target->P_max_hp);
+	Target->P_hp = FMath::Clamp(Target->P_hp + Target->heal_by_time, 0.0f, Target->P_max_hp);
 	UE_LOG(LogTemp, Warning, TEXT("Heal Tick: %d"), Target->P_hp);
 }

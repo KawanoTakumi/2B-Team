@@ -24,5 +24,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffect(AMyPlayCharacter* target,UBuffDataBase* bufftype);
 	UFUNCTION()
-	void HealTick(AMyPlayCharacter* Target,UBuffDataBase* Buff);
+	void HealTick(AMyPlayCharacter* Target);
 };

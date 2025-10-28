@@ -79,6 +79,7 @@ private:
 	void ChooseNewDirection();
 	class AMyPlayCharacter* CPlayer;
 	bool CanAttack = false;//攻撃できるかどうか
+	float AttackTimer = 0.0f;//攻撃までの時間
 	//ステータス（独立）
 	int max_hp;//最大体力
 	int E_hp;//体力
