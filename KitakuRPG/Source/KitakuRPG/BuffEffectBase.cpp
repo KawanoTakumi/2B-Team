@@ -17,7 +17,6 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 	{
 		//攻撃アップ
 		Target->P_attack += buffType->Value;
-		UE_LOG(LogTemp, Warning, TEXT("Attack Up %d"),Target->P_attack);
 	}break;
 	case EBuffType::Heal:
 	{
@@ -34,7 +33,6 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 	{
 		//スピードアップ
 		Target->P_speed += buffType->Value;
-		UE_LOG(LogTemp, Warning, TEXT("Speed Up %f"), Target->P_speed);
 	}break;
 	default:
 		break;
@@ -46,5 +44,4 @@ void UBuffEffectBase::HealTick(AMyPlayCharacter* Target)
 	if (!Target) return;
 
 	Target->P_hp = FMath::Clamp(Target->P_hp + Target->heal_by_time, 0.0f, Target->P_max_hp);
-	UE_LOG(LogTemp, Warning, TEXT("Heal Tick: %d"), Target->P_hp);
 }

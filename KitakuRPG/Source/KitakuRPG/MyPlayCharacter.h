@@ -39,12 +39,12 @@ public:
 	//ステータス
 	int P_attack = 1;
 	int P_max_hp = 1;
-	int P_hp = 1;
+	float P_hp = 1;
 	float P_speed = 1;
 	int P_level = 1;
 	int P_EXP = 1;
 	int P_max_EXP = 30;
-	int heal_by_time = 0;//自然回復力
+	float heal_by_time = 0;//自然回復力
 	
 	//初期位置
 	FVector startPos;
