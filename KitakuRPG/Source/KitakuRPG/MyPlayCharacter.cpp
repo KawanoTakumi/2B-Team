@@ -2,6 +2,7 @@
 
 
 #include "MyPlayCharacter.h"
+#include "breakbox.h"
 #include "Components/SphereComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -176,9 +177,19 @@ void AMyPlayCharacter::Attack()
 
 	if (bHit && HitResult.GetActor())
 	{
-		//敵にダメージを与える
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(),P_attack,
-			GetController(), this, UDamageType::StaticClass());
+
+		// 壊れるBOXかどうか判定
+		Abreakbox* HitBox = Cast<Abreakbox>(HitResult.GetActor());
+		if (HitBox)
+		{
+			HitBox->OnHitByPlayer(P_attack); // プレイヤーの攻撃力を渡す
+		}
+		else
+		{
+			//敵にダメージを与える
+			UGameplayStatics::ApplyDamage(HitResult.GetActor(), P_attack,
+				GetController(), this, UDamageType::StaticClass());
+		}
 	}
 }
 //ダメージ取得(TakeDamageの代替)
