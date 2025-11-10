@@ -35,4 +35,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	EBuffType BuffType;
 
+	//ƒoƒt‚ÌŒp‘±ŽžŠÔ
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	float Timer = 50.0f;
+
 };
