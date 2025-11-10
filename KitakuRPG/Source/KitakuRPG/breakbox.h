@@ -27,11 +27,18 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BoxMesh;
 
-	UFUNCTION()
-	void OnHitByPlayer(float Damage);
-
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	class UNiagaraSystem* n_effect;
 	// HPÇéùÇΩÇπÇÈ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
 	float BoxHP = 1.0f;
+
+
+	UFUNCTION()
+	void SpawnEffect();
+	UFUNCTION()
+	void OnHitByPlayer(float Damage);
+
+
 
 };

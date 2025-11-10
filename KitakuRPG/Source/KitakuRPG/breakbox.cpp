@@ -3,7 +3,8 @@
 
 #include "breakbox.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 // Sets default values
 Abreakbox::Abreakbox()
 {
@@ -44,11 +45,22 @@ void Abreakbox::Tick(float DeltaTime)
 void Abreakbox::OnHitByPlayer(float Damage)
 {
 	BoxHP -= Damage;
+	SpawnEffect();
 	if (BoxHP <= 0)
 	{
 		Destroy();
 	}
 }
 
-
-
+void Abreakbox::SpawnEffect()
+{
+	if (n_effect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			n_effect,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+}
