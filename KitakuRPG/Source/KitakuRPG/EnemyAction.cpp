@@ -103,8 +103,8 @@ void AEnemyAction::Tick(float DeltaTime)
 					FTimerHandle JumpTimerhandle;
 					GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
 				});
-		}
 
+		}
 	}
 	//前後左右にランダムに移動する
 // 一定時間ごとに方向を変更
