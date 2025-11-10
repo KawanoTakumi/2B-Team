@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "EnemyAction.generated.h"
 
 UCLASS()
@@ -56,6 +58,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
 	float jump_Height = 400.0f;
 
+	//パーティクル
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* particle;
+
 	//関数//
 public:
 	//敵がプレイヤーを見つけた時行動
@@ -68,6 +74,9 @@ public:
 	UFUNCTION()
 	void Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+	//エフェクト発生関数
+	UFUNCTION()
+	void Hit_Effect();
 
 	void ResetJump();
 	//移動している方向を前として角度を回転させる
