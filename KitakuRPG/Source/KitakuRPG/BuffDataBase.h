@@ -12,6 +12,9 @@ enum class EBuffType : uint8
 	AttackUp,
 	Heal,
 	SpeedUp,
+	AttackDown,
+	Poison,
+	SpeedDown
 };
 
 /**
@@ -37,6 +40,6 @@ public:
 
 	//ƒoƒt‚ÌŒp‘±ŽžŠÔ
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
-	float Timer = 50.0f;
+	float Timer = -1.0f;
 
 };

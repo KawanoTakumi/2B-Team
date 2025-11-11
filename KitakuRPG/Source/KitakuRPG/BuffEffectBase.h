@@ -23,6 +23,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffect(AMyPlayCharacter* target,UBuffDataBase* bufftype);
+	//ˆê•b–ˆ‚Ì‰ñ•œˆ—
 	UFUNCTION()
 	void HealTick(AMyPlayCharacter* Target);
+	UFUNCTION()
+	//ˆê•b‚²–ˆ‚Ìƒ_ƒ[ƒWˆ—
+	void PoisonTick(AMyPlayCharacter* Target,UBuffDataBase* base);
+
 };
