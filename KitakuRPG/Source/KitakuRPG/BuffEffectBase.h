@@ -18,7 +18,10 @@ class KITAKURPG_API UBuffEffectBase : public UObject
 	
 public:
 
-	FTimerHandle HealTimer;
+	FTimerHandle HealTimer;//回復のタイマー
+	FTimerHandle PoisonTimer;//毒のタイマー
+	FTimerHandle ATK_down_Timer;//攻撃力減少タイマー
+	FTimerHandle SPEED_down_Timer;//速度減少タイマー
 
 
 	UFUNCTION(BlueprintCallable)
@@ -27,7 +30,13 @@ public:
 	UFUNCTION()
 	void HealTick(AMyPlayCharacter* Target);
 	UFUNCTION()
-	//一秒ご毎のダメージ処理
+	//一秒毎のダメージ処理
 	void PoisonTick(AMyPlayCharacter* Target,UBuffDataBase* base);
-
+	UFUNCTION()
+	void StopPoisonTimer();
+	
+	UFUNCTION()
+	void ATK_downTick(AMyPlayCharacter* Target, UBuffDataBase* base);
+	UFUNCTION()
+	void SPEED_downTick(AMyPlayCharacter* Target, UBuffDataBase* base);
 };

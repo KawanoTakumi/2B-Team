@@ -14,7 +14,7 @@ enum class EBuffType : uint8
 	SpeedUp,
 	AttackDown,
 	Poison,
-	SpeedDown
+	SpeedDown,
 };
 
 /**
