@@ -34,13 +34,17 @@ public:
 
 
 	//たいまつの所持数
+	UPROPERTY()
 	int torchCount = 0;
-
+	//鍵の所持数
+	UPROPERTY()
+	int keyCount = 0;
 	//ステータス
 	int P_attack = 1;
 	int P_max_hp = 1;
 	float P_hp = 1;
 	float P_speed = 1;
+	UPROPERTY()
 	int P_level = 1;
 	int P_EXP = 1;
 	int P_max_EXP = 30;

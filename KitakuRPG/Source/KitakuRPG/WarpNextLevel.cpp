@@ -48,11 +48,13 @@ void AWarpNextLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 		if (OtherActor->ActorHasTag("Player"))
 		{
 			AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
-			if (TargetPlayer)
+			if (TargetPlayer && TargetPlayer->keyCount > 0)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("player hit"));
 				//ŽŸ‚ÌƒŒƒxƒ‹‚ÉˆÚ“®
+				TargetPlayer->keyCount--;
 				SetNextlevelName(level_name);
+				
 			}
 		}
 	}

@@ -142,7 +142,6 @@ void AMyPlayCharacter::MLookUp(float value)
 void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
 		SetActorLocation(startPos);
@@ -152,6 +151,13 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 		//たいまつの場合
 		torchCount++;
 		OtherActor->Destroy();//拾ったら削除する
+	}
+	if (OtherActor && OtherActor->ActorHasTag("KEY"))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("aaa"));
+		//鍵の場合
+		keyCount++;
+		OtherActor->Destroy();
 	}
 }
 //攻撃
