@@ -69,6 +69,16 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 		HUDwidget->UpdateLevel(P_level);
 	}
 
+	//攻撃アニメーションの終了判定
+	if (FA)
+	{
+		time++;
+		if (time == 60)
+		{
+			time = 0;
+			FA = false;
+		}
+	}
 
 	//体力がなくなったら
 	if (P_hp < 0)
@@ -163,40 +173,45 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 //攻撃
 void AMyPlayCharacter::Attack()
 {
-	//攻撃アニメーションを再生
-	if (AttackMontage && GetMesh() && GetMesh()->GetAnimInstance())
+	if (!FA)
 	{
-		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+		//攻撃アニメーションを再生
+		if (AttackMontage && GetMesh() && GetMesh()->GetAnimInstance())
+		{
+			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+			FA = true;
+		}
+
+		//攻撃範囲の判定
+		FVector Start = GetActorLocation();
+		FVector ForwardVector = GetActorForwardVector();
+		FVector End = Start + ForwardVector * 200.0f; //200ユニット前方
+
+		FHitResult HitResult;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this); //自分自身は無視
+
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
+			End, ECC_Pawn, Params);
+
+		if (bHit && HitResult.GetActor())
+		{
+
+			// 壊れるBOXかどうか判定
+			Abreakbox* HitBox = Cast<Abreakbox>(HitResult.GetActor());
+			if (HitBox)
+			{
+				HitBox->OnHitByPlayer(P_attack); // プレイヤーの攻撃力を渡す
+			}
+			else
+			{
+				//敵にダメージを与える
+				UGameplayStatics::ApplyDamage(HitResult.GetActor(), P_attack,
+					GetController(), this, UDamageType::StaticClass());
+			}
+		}
 	}
 
-	//攻撃範囲の判定
-	FVector Start = GetActorLocation();
-	FVector ForwardVector = GetActorForwardVector();
-	FVector End = Start + ForwardVector * 200.0f; //200ユニット前方
-
-	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this); //自分自身は無視
-
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
-		End, ECC_Pawn, Params);
-
-	if (bHit && HitResult.GetActor())
-	{
-
-		// 壊れるBOXかどうか判定
-		Abreakbox* HitBox = Cast<Abreakbox>(HitResult.GetActor());
-		if (HitBox)
-		{
-			HitBox->OnHitByPlayer(P_attack); // プレイヤーの攻撃力を渡す
-		}
-		else
-		{
-			//敵にダメージを与える
-			UGameplayStatics::ApplyDamage(HitResult.GetActor(), P_attack,
-				GetController(), this, UDamageType::StaticClass());
-		}
-	}
 }
 //ダメージ取得(TakeDamageの代替)
 void AMyPlayCharacter::GetDamage(int damage)

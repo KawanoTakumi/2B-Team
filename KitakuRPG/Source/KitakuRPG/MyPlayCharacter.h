@@ -49,7 +49,9 @@ public:
 	int P_EXP = 1;
 	int P_max_EXP = 30;
 	float heal_by_time = 0;//©‘R‰ñ•œ—Í
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FLAG")
+	bool FA = false;
+	int time = 0;
 	//‰ŠúˆÊ’u
 	FVector startPos;
 	
