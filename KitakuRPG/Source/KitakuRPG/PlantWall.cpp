@@ -45,11 +45,8 @@ void APlantWall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 			if (TargetPlayer && TargetPlayer->torchCount > 0)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("player hit"));
-				WallMesh->SetVisibility(false); // •Ç‚ð”ñ•\Ž¦
-				WallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Õ“Ë‚à–³Œø‰»
-
+				this->Destroy();
 			}
-
 		}
 	}
 }
