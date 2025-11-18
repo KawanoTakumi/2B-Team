@@ -37,18 +37,7 @@ AEnemyAction::AEnemyAction()
 void AEnemyAction::BeginPlay()
 {
 	Super::BeginPlay();
-	//ステータスを読み込む
-	EStatus = this->FindComponentByClass<UStatusComponent>();
-
-	if (EStatus)
-	{
-		max_hp = EStatus->Read_MAX_HP;
-		attack = EStatus->Read_Attck;
-		speed = EStatus->Read_Speed;
-		exp = EStatus->Read_EXP;
-		AttackTimer = jump_Cooldown;
-	}
-
+	SetStatus();
 	CanJumpToPlayer = true;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
 	attackedSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::Attacked);
@@ -64,20 +53,11 @@ void AEnemyAction::Tick(float DeltaTime)
 	if (AttackTimer > 0)
 	{
 		AttackTimer--;
-		if (AttackTimer == 0)
+		if (AttackTimer <= 0)
 			CanAttack = true;
 	}
 
-	//プレイヤーの方向を向かせる
-	if (CanHitPlayer && CPlayer)
-	{
-		FVector Direction = (CPlayer->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-		FRotator LookAtRotation = Direction.Rotation();
-		LookAtRotation.Pitch = 0.0f;
-		LookAtRotation.Roll = 0.0f;
-		SetActorRotation(LookAtRotation);
-	}
-
+	TurnToPlayer();
 	//プレイヤーが索敵範囲内に入れば
 	if (CanHitPlayer)
 	{
@@ -126,6 +106,36 @@ void AEnemyAction::Tick(float DeltaTime)
 		TargetRotation.Roll = 0.0f;
 		SetActorRotation(TargetRotation);
 	}
+}
+
+void AEnemyAction::TurnToPlayer()
+{
+	//プレイヤーの方向を向かせる
+	if (CanHitPlayer && CPlayer)
+	{
+		FVector Direction = (CPlayer->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		FRotator LookAtRotation = Direction.Rotation();
+		LookAtRotation.Pitch = 0.0f;
+		LookAtRotation.Roll = 0.0f;
+		SetActorRotation(LookAtRotation);
+	}
+
+}
+
+void AEnemyAction::SetStatus()
+{
+	//ステータスを読み込む
+	EStatus = this->FindComponentByClass<UStatusComponent>();
+
+	if (EStatus)
+	{
+		max_hp = EStatus->Read_MAX_HP;
+		attack = EStatus->Read_Attck;
+		speed = EStatus->Read_Speed;
+		exp = EStatus->Read_EXP;
+		AttackTimer = jump_Cooldown;
+	}
+
 }
 
 //ダメージ取得関数
