@@ -29,8 +29,6 @@ AEnemyAction::AEnemyAction()
 	attackedSphere->SetupAttachment(RootComponent);
 	attackedSphere->SetSphereRadius(100.0f);
 	attackedSphere->SetCollisionProfileName(TEXT("Trigger"));
-
-	
 }
 
 // Called when the game starts or when spawned
@@ -42,6 +40,7 @@ void AEnemyAction::BeginPlay()
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
 	attackedSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::Attacked);
 	E_hp = max_hp;//最大体力に設定
+	
 	ChooseNewDirection(); // 初期方向を決定
 }
 
@@ -50,13 +49,20 @@ void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//攻撃のクールタイムを設定
-	if (AttackTimer > 0)
+	if (AttackTimer > 0 && !CanAttack)
 	{
 		AttackTimer--;
 		if (AttackTimer <= 0)
+		{
 			CanAttack = true;
+			AttackTimer = 200.0f;//攻撃のタイマー
+		}
+			
 	}
 
+	//攻撃できる状態でかつプレイヤーを取得していたらダメージを与える
+	if (CanAttack && hit != nullptr)
+		ActionInterval(hit);
 	TurnToPlayer();
 	//プレイヤーが索敵範囲内に入れば
 	if (CanHitPlayer)
@@ -110,7 +116,7 @@ void AEnemyAction::Tick(float DeltaTime)
 
 void AEnemyAction::TurnToPlayer()
 {
-	//プレイヤーの方向を向かせる
+	//プレイヤーの方向に向かせる
 	if (CanHitPlayer && CPlayer)
 	{
 		FVector Direction = (CPlayer->GetActorLocation() - GetActorLocation()).GetSafeNormal();
@@ -178,6 +184,7 @@ void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (!OtherActor)return;
 	CanHitPlayer = false;
+	hit = nullptr;//当たった敵を初期化
 }
 
 void AEnemyAction::ResetJump()
@@ -189,19 +196,22 @@ void AEnemyAction::ResetJump()
 void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	if (!OtherActor) return;
 	// プレイヤーかどうか判定
-	if (OtherActor->ActorHasTag("Player"))
+	if (OtherActor->ActorHasTag("Player")&& CanAttack == true)
 	{
-		AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
-		//プレイヤーが見つかっているかつ、ジャンプできる状態であればダメージを与える
-		if (TargetPlayer && CanAttack)
-		{
-			CanAttack = false;
-			TargetPlayer->GetDamage(attack);
-			
-		}
+		hit = OtherActor;
+	}
+}
+void AEnemyAction::ActionInterval(AActor* actor)
+{
+	if (!actor) return;
+	AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(actor);
+	//プレイヤーが見つかっているかつ、ジャンプできる状態であればダメージを与える
+	if (TargetPlayer && CanAttack)
+	{
+		CanAttack = false;
+		TargetPlayer->GetDamage(attack);
 	}
 }
 

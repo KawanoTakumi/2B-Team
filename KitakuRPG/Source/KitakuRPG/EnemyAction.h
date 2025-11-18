@@ -77,6 +77,7 @@ public:
 
 	void SetStatus();
 	void TurnToPlayer();
+	void ActionInterval(AActor* actor);
 	//エフェクト発生関数
 	UFUNCTION()
 	void Hit_Effect();
@@ -85,6 +86,7 @@ public:
 	//移動している方向を前として角度を回転させる
 private:
 	FVector CurrentDirection = {0,0,0};
+	AActor* hit;
 	float ChangeDirectionInterval = 2.0f;
 	float TimeSinceLastChange = 0.0f;
 	bool CanHitPlayer = false;//プレイヤーが当たったかどうか
