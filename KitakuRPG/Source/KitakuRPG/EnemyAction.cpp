@@ -152,11 +152,15 @@ float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	Hit_Effect();
 	if (E_hp < 1)
 	{
+		//プレイヤーにEXPを付与
 		if (CPlayer)
 		{
 			CPlayer->GetEXP(exp);
 		}
 
+		//ドロップアイテム
+		DropItem();
+		//オブジェクト削除
 		this->Destroy();
 	}
 	return GetDamage;
@@ -190,6 +194,18 @@ void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActo
 void AEnemyAction::ResetJump()
 {
 	CanJumpToPlayer = true;
+}
+
+void AEnemyAction::DropItem()
+{
+	if (spawn_object)
+	{
+		FActorSpawnParameters param;
+		param.Owner = this;
+
+		GetWorld()->SpawnActor<AActor>(spawn_object, GetActorLocation(), GetActorRotation(), param);
+	}
+
 }
 
 //攻撃

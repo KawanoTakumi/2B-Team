@@ -61,6 +61,9 @@ public:
 	//パーティクル
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	UNiagaraSystem* particle;
+	//スポーンさせたいオブジェクト
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SPAWN")
+	TSubclassOf<AActor> spawn_object;
 
 	//関数//
 public:
@@ -78,6 +81,7 @@ public:
 	void SetStatus();
 	void TurnToPlayer();
 	void ActionInterval(AActor* actor);
+	void DropItem();
 	//エフェクト発生関数
 	UFUNCTION()
 	void Hit_Effect();
