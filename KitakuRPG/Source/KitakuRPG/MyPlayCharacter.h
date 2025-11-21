@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "MyPlayHUD.h"
@@ -14,8 +15,7 @@ class KITAKURPG_API AMyPlayCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComponent;
+
 
 protected:
 	AMyPlayCharacter();
@@ -32,6 +32,12 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;
 
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* spring_arm;
+
 
 	//ÇΩÇ¢Ç‹Ç¬ÇÃèäéùêî
 	UPROPERTY()
@@ -44,7 +50,6 @@ public:
 	int P_max_hp = 1;
 	float P_hp = 1;
 	float P_speed = 1;
-	UPROPERTY()
 	int P_level = 1;
 	int P_EXP = 1;
 	int P_max_EXP = 30;

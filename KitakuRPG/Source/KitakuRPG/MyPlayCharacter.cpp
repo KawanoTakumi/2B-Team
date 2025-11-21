@@ -18,15 +18,24 @@ AMyPlayCharacter::AMyPlayCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	//スプリングアーム設定
+	spring_arm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	spring_arm->SetupAttachment(RootComponent);
+	spring_arm->TargetArmLength = 300.0f;
+	spring_arm->bUsePawnControlRotation = true;
+	spring_arm->bDoCollisionTest = true;
+	spring_arm->bEnableCameraLag = true;
+	spring_arm->CameraLagSpeed = 10.0f;
+	spring_arm->ProbeChannel = ECC_Camera;
+	spring_arm->ProbeSize = 12.0f;
 
+	//カメラの設定
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	check(CameraComponent != nullptr);
-
-	CameraComponent->SetupAttachment(CastChecked<USceneComponent, UCapsuleComponent>(GetCapsuleComponent()));
-
-	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
-
-	CameraComponent->bUsePawnControlRotation = true;
+	CameraComponent->SetupAttachment(spring_arm, USpringArmComponent::SocketName);
+	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 30.0f + BaseEyeHeight));
+	CameraComponent->bUsePawnControlRotation = false;
 
 }
 
@@ -55,6 +64,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FRotator ControlRot = GetControlRotation();
+
 
 	// ピッチ角度を -30 〜 +30 に制限
 	ControlRot.Pitch = FMath::ClampAngle(ControlRot.Pitch, -10.0f, 10.0f);
@@ -89,6 +99,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	}
 }
 
+
 //ダメージ取得関数
 float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser)
@@ -111,7 +122,7 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	//マウスの視点移動バインド
 	PlayerInputComponent->BindAxis("Turn", this, &AMyPlayCharacter::MTurn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMyPlayCharacter::MLookUp);
-
+	
 	//プレイヤー攻撃
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyPlayCharacter::Attack);
 }
