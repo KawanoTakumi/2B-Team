@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "EnemyBullet.h"
 #include "EnemyAction.generated.h"
 
 UCLASS()
@@ -41,6 +42,10 @@ public:
 	//攻撃判定用スフィアの設定
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
 	class USphereComponent* attackedSphere;
+
+	//弾丸のオブジェクト
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BULLET")
+	TSubclassOf<AEnemyBullet> bullet_object;
 
 	//ジャンプできるかどうか（クールダウン判定）
 	bool CanJumpToPlayer = false;

@@ -83,6 +83,16 @@ void AEnemyAction::Tick(float DeltaTime)
 
 			CanJumpToPlayer = false;
 
+			if (bullet_object)
+			{
+				FActorSpawnParameters param;
+				param.Owner = this;
+				AEnemyBullet* bullet;
+				bullet = GetWorld()->SpawnActor<AEnemyBullet>(bullet_object, GetActorLocation(), GetActorRotation(), param);
+				//bullet->FireDirection = ();
+
+			}
+
 			//àÍíËéûä‘å„Ç…çƒÇ—ÉWÉÉÉìÉvâ¬î\Ç…Ç∑ÇÈ
 			GetWorldTimerManager().SetTimerForNextTick([this]()
 				{
@@ -205,7 +215,6 @@ void AEnemyAction::DropItem()
 
 		GetWorld()->SpawnActor<AActor>(spawn_object, GetActorLocation(), GetActorRotation(), param);
 	}
-
 }
 
 //çUåÇ
