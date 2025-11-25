@@ -10,6 +10,7 @@
 #include"MyPlayCharacter.h"
 #include "StatusComponent.h"//ステータスコンポーネント
 #include "DrawDebugHelpers.h"
+#include "EBullet.h"
 
 
 // Sets default values
@@ -83,15 +84,25 @@ void AEnemyAction::Tick(float DeltaTime)
 
 			CanJumpToPlayer = false;
 
-			if (bullet_object)
+			if (bullet)
 			{
+				FVector SpawnLocation = GetActorLocation();
+				FRotator SpawnRotation = GetActorRotation();
+
 				FActorSpawnParameters param;
 				param.Owner = this;
-				AEnemyBullet* bullet;
-				bullet = GetWorld()->SpawnActor<AEnemyBullet>(bullet_object, GetActorLocation(), GetActorRotation(), param);
-				//bullet->FireDirection = ();
+				param.Instigator = GetInstigator();
+
+				AEBullet* Bullet = GetWorld()->SpawnActor<AEBullet>(bullet, SpawnLocation, SpawnRotation, param);
+				if (Bullet)
+				{
+					// 発射方向を回転からベクトルに変換
+					FVector LaunchDirection = SpawnRotation.Vector();
+					Bullet->FireInDirection(LaunchDirection);
+				}
 
 			}
+
 
 			//一定時間後に再びジャンプ可能にする
 			GetWorldTimerManager().SetTimerForNextTick([this]()

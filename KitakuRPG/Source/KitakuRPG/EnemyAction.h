@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
-#include "EnemyBullet.h"
 #include "EnemyAction.generated.h"
 
 UCLASS()
@@ -43,9 +42,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
 	class USphereComponent* attackedSphere;
 
-	//弾丸のオブジェクト
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BULLET")
-	TSubclassOf<AEnemyBullet> bullet_object;
 
 	//ジャンプできるかどうか（クールダウン判定）
 	bool CanJumpToPlayer = false;
@@ -69,6 +65,9 @@ public:
 	//スポーンさせたいオブジェクト
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SPAWN")
 	TSubclassOf<AActor> spawn_object;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SPAWN")
+	TSubclassOf<AEBullet> bullet;
 
 	//関数//
 public:
