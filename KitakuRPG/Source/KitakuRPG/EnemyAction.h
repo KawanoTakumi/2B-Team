@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "EBullet.h"
 #include "EnemyAction.generated.h"
 
 UCLASS()
