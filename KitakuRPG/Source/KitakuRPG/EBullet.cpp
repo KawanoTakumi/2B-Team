@@ -42,7 +42,10 @@ void AEBullet::BeginPlay()
 void AEBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (m_max_move_timer > 0)
+		m_max_move_timer--;
+	else
+		this->Destroy();
 }
 
 void AEBullet::HitBullet(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,

@@ -34,6 +34,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
 	class UProjectileMovementComponent* ProjectileMovement;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VALUE")
+	float m_max_move_timer = 60 * 4.0f;
 	UFUNCTION()
 	void HitBullet(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
