@@ -165,6 +165,7 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
+		P_hp -= 10;
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
