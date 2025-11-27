@@ -4,6 +4,8 @@
 #include "EBullet.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "EnemyAction.h"
+#include "MyPlayCharacter.h"
 // Sets default values
 AEBullet::AEBullet()
 {
@@ -11,6 +13,7 @@ AEBullet::AEBullet()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BulletMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
+	BulletMesh->SetCollisionProfileName(TEXT("Trigger"));
 	RootComponent = BulletMesh;
 
 	hitCollision = CreateDefaultSubobject<USphereComponent>("HitCollision");
@@ -19,8 +22,8 @@ AEBullet::AEBullet()
 	hitCollision->SetCollisionProfileName(TEXT("Trigger"));
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-	ProjectileMovement->InitialSpeed = 2000.f;
-	ProjectileMovement->MaxSpeed = 2000.f;
+	ProjectileMovement->InitialSpeed = 400.f;
+	ProjectileMovement->MaxSpeed = 800.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->ProjectileGravityScale = 0.f; // 重力なし
 
@@ -45,12 +48,18 @@ void AEBullet::Tick(float DeltaTime)
 void AEBullet::HitBullet(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
+	
 	//このオブジェクトを消す
-	this->Destroy();
 	if (OtherActor->ActorHasTag("Player"))
 	{
-
-		
+		if (!OtherActor) return;
+		AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
+		//プレイヤーが見つかっているかつ、ジャンプできる状態であればダメージを与える
+		if (TargetPlayer)
+		{
+			TargetPlayer->GetDamage(m_damage);
+		}
+		this->Destroy();
 	}
 }
 void AEBullet::FireInDirection(const FVector& ShootDirection)
