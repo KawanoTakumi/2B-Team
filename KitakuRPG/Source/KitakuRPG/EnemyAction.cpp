@@ -49,6 +49,8 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
 	//攻撃のクールタイムを設定
 	if (AttackTimer > 0 && !CanAttack)
 	{
@@ -56,7 +58,9 @@ void AEnemyAction::Tick(float DeltaTime)
 		if (AttackTimer <= 0)
 		{
 			CanAttack = true;
-			AttackTimer = 200.0f;//攻撃のタイマー
+			AttackTimer = 60.0f* 2;//攻撃のタイマー
+
+
 		}
 			
 	}
@@ -83,26 +87,23 @@ void AEnemyAction::Tick(float DeltaTime)
 			LaunchCharacter(LaunchVelocity, true, true);
 
 			CanJumpToPlayer = false;
-
 			if (bullet)
 			{
-				FVector SpawnLocation = GetActorLocation();
 				FRotator SpawnRotation = GetActorRotation();
-
+				FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
 				FActorSpawnParameters param;
 				param.Owner = this;
 				param.Instigator = GetInstigator();
-
-				AEBullet* Bullet = GetWorld()->SpawnActor<AEBullet>(bullet, SpawnLocation, SpawnRotation, param);
+				param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				AEBullet* Bullet = GetWorld()->SpawnActor<AEBullet>(bullet.Get(), SpawnLocation, SpawnRotation, param);
 				if (Bullet)
 				{
 					// 発射方向を回転からベクトルに変換
 					FVector LaunchDirection = SpawnRotation.Vector();
 					Bullet->FireInDirection(LaunchDirection);
+					Bullet->m_damage = attack;
 				}
-
 			}
-
 
 			//一定時間後に再びジャンプ可能にする
 			GetWorldTimerManager().SetTimerForNextTick([this]()

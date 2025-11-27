@@ -31,7 +31,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MESH")
 	class USphereComponent* hitCollision;
 	// 移動コンポーネント
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VALUE")
 	class UProjectileMovementComponent* ProjectileMovement;
 
 	UFUNCTION()
@@ -40,5 +40,6 @@ public:
 
 	// 発射方向を設定する関数
 	void FireInDirection(const FVector& ShootDirection);
-
+	void SetDamage(AActor& Other);
+	int m_damage = 0;
 };
