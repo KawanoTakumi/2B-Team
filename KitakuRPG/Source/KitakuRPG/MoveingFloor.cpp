@@ -39,15 +39,6 @@ void AMoveingFloor::BeginPlay()
         5.0f // 太さ
     );
 
-    // 終点にデバッグボックスを表示
-    DrawDebugBox(
-        GetWorld(),
-        EndLocation,
-        FVector(20.0f), // サイズ
-        FColor::Green,
-        true,
-        10.0f
-    );
 
 }
 
@@ -55,16 +46,34 @@ void AMoveingFloor::BeginPlay()
 void AMoveingFloor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    MoveToFloor(DeltaTime);
+}
+
+void AMoveingFloor::MoveToFloor(float Deltatime)
+{
+    if (!bCanMoved) return; // 待機中なら動かさない
+
     FVector CurrentLocation = GetActorLocation();
-    FVector DeltaMove = MovementDirection.GetSafeNormal() * MovementSpeed * DeltaTime;
+    FVector DeltaMove = MovementDirection.GetSafeNormal() * MovementSpeed * Deltatime;
 
     if (TraveledDistance >= MaxDistance)
     {
         bMovingForward = !bMovingForward;
         TraveledDistance = 0.0f;
+
+        // ここで3秒待機開始
+        bCanMoved = false;
+        GetWorldTimerManager().SetTimer(RestartMovement, this, &AMoveingFloor::ResumeMove, 3.0f, false);
+        return; // このTickでは動かさない
     }
 
     FVector Move = bMovingForward ? DeltaMove : -DeltaMove;
     SetActorLocation(CurrentLocation + Move);
     TraveledDistance += Move.Size();
+
+}
+
+void AMoveingFloor::ResumeMove()
+{
+    bCanMoved = true;
 }
