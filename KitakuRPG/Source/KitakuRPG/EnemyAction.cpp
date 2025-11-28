@@ -65,9 +65,6 @@ void AEnemyAction::Tick(float DeltaTime)
 			
 	}
 
-	//攻撃できる状態でかつプレイヤーを取得していたらダメージを与える
-	if (CanAttack && hit != nullptr)
-		ActionInterval(hit);
 	TurnToPlayer();
 	//プレイヤーが索敵範囲内に入れば
 	if (CanHitPlayer)
@@ -210,7 +207,8 @@ void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (!OtherActor)return;
 	CanHitPlayer = false;
-	hit = nullptr;//当たった敵を初期化
+	CPlayer = nullptr;
+	hit = nullptr;//当たったアクターを初期化
 }
 
 void AEnemyAction::ResetJump()
@@ -238,17 +236,21 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	if (OtherActor->ActorHasTag("Player")&& CanAttack == true)
 	{
 		hit = OtherActor;
+		ActionInterval(hit);
 	}
 }
 void AEnemyAction::ActionInterval(AActor* actor)
 {
 	if (!actor) return;
-	AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(actor);
+	CPlayer= Cast<AMyPlayCharacter>(actor);
 	//プレイヤーが見つかっているかつ、ジャンプできる状態であればダメージを与える
-	if (TargetPlayer && CanAttack)
+	if (CPlayer && CanAttack && CanHitPlayer)
 	{
 		CanAttack = false;
-		TargetPlayer->GetDamage(attack);
+		CPlayer->GetDamage(attack);
+		FVector knockback = GetActorForwardVector() * 20.0f;
+		knockback.Z = 30.0f;
+		CPlayer->LaunchCharacter(knockback,true,true);
 	}
 }
 

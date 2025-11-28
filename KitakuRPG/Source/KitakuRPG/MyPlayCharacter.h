@@ -10,6 +10,7 @@
 #include "MyPlayHUD.h"
 #include "MyPlayCharacter.generated.h"
 
+
 UCLASS()
 class KITAKURPG_API AMyPlayCharacter : public ACharacter
 {
@@ -39,6 +40,7 @@ public:
 	class USpringArmComponent* spring_arm;
 
 
+
 	//たいまつの所持数
 	UPROPERTY()
 	int torchCount = 0;
@@ -46,14 +48,14 @@ public:
 	UPROPERTY()
 	int keyCount = 0;
 	//ステータス
-	int P_attack = 1;
-	int P_max_hp = 1;
-	float P_hp = 1;
-	float P_speed = 1;
-	int P_level = 1;
+	int g_player_attack = 1;
+	int g_player_max_hp = 1;
+	int g_player_level = 1;
+	float g_player_hp = 1;
+	float g_player_speed = 1;
+	float g_heal_by_time = 0;//自然回復力
 	int P_EXP = 1;
 	int P_max_EXP = 30;
-	float heal_by_time = 0;//自然回復力
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FLAG")
 	bool FA = false;
 	int time = 0;

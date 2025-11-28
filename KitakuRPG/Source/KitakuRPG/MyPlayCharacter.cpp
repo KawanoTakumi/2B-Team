@@ -12,7 +12,7 @@
 #include "LevelUpWidget.h"
 #include "BuffDataBase.h"
 #include "BuffEffectBase.h"
-
+#include "GameInstanceValue.h"
 // Sets default values
 AMyPlayCharacter::AMyPlayCharacter()
 {
@@ -50,10 +50,10 @@ void AMyPlayCharacter::BeginPlay()
 	//ステータス読み込み
 	if (Status)
 	{
-		P_attack = Status->Read_Attck;
-		P_max_hp = Status->Read_MAX_HP;
-		P_speed = Status->Read_Speed;
-		P_hp = P_max_hp;
+		g_player_attack = Status->Read_Attck;
+		g_player_max_hp = Status->Read_MAX_HP;
+		g_player_speed = Status->Read_Speed;
+		g_player_hp = g_player_max_hp;
 	}
 	//HUD取得
 	HUDwidget = Cast<AMyPlayHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
@@ -66,8 +66,8 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	FRotator ControlRot = GetControlRotation();
 
 
-	// ピッチ角度を -30 〜 +30 に制限
-	ControlRot.Pitch = FMath::ClampAngle(ControlRot.Pitch, -10.0f, 10.0f);
+	// ピッチ角度を -20 〜 +20 に制限
+	ControlRot.Pitch = FMath::ClampAngle(ControlRot.Pitch, -20.0f, 20.0f);
 
 	// 制限した回転を適用
 	GetController()->SetControlRotation(ControlRot);
@@ -75,8 +75,8 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	//ウィジェット更新
 	if (HUDwidget)
 	{
-		HUDwidget->UpdateHPBar(P_hp, P_max_hp);
-		HUDwidget->UpdateLevel(P_level);
+		HUDwidget->UpdateHPBar(g_player_hp, g_player_max_hp);
+		HUDwidget->UpdateLevel(g_player_level);
 	}
 
 	//攻撃アニメーションの終了判定
@@ -91,9 +91,9 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	}
 
 	//体力がなくなったら
-	if (P_hp < 0)
+	if (g_player_hp < 0)
 	{
-		P_hp = 50;
+		g_player_hp = 50;
 		//いったん初期地に戻す
 		SetActorLocation(startPos);
 	}
@@ -105,7 +105,7 @@ float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	AController* EventInstigator, AActor* DamageCauser)
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	P_hp -= GetDamage;
+	g_player_hp -= GetDamage;
 
 	return GetDamage;
 }
@@ -130,13 +130,13 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AMyPlayCharacter::MoveForward(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, value * P_speed);
+	AddMovementInput(Direction, value * g_player_speed);
 }
 //左右移動
 void AMyPlayCharacter::MoveRight(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, value * P_speed);
+	AddMovementInput(Direction, value * g_player_speed);
 }
 
 void AMyPlayCharacter::StartJump()
@@ -165,7 +165,7 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
-		P_hp -= 10;
+		g_player_hp -= 10;
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
@@ -213,12 +213,12 @@ void AMyPlayCharacter::Attack()
 			Abreakbox* HitBox = Cast<Abreakbox>(HitResult.GetActor());
 			if (HitBox)
 			{
-				HitBox->OnHitByPlayer(P_attack); // プレイヤーの攻撃力を渡す
+				HitBox->OnHitByPlayer(g_player_attack); // プレイヤーの攻撃力を渡す
 			}
 			else
 			{
 				//敵にダメージを与える
-				UGameplayStatics::ApplyDamage(HitResult.GetActor(), P_attack,
+				UGameplayStatics::ApplyDamage(HitResult.GetActor(), g_player_attack,
 					GetController(), this, UDamageType::StaticClass());
 			}
 		}
@@ -229,8 +229,8 @@ void AMyPlayCharacter::Attack()
 void AMyPlayCharacter::GetDamage(int damage)
 {
 	//攻撃力0あるいは体力0なら破棄
-	if (damage < 0 || P_hp < 0)return;
-	P_hp -= damage;
+	if (damage < 0 || g_player_hp < 0)return;
+	g_player_hp -= damage;
 }
 //経験値獲得
 void AMyPlayCharacter::GetEXP(int EXP)
@@ -242,7 +242,7 @@ void AMyPlayCharacter::GetEXP(int EXP)
 //レベルアップ
 void AMyPlayCharacter::LevelUp()
 {
-	P_level++;
+	g_player_level++;
 	P_EXP = 0;
 	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.2f);//次のレベルまでの最大経験値量を指定
 	if (LevelWidget)
