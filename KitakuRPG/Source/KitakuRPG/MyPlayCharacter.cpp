@@ -22,7 +22,7 @@ AMyPlayCharacter::AMyPlayCharacter()
 	//スプリングアーム設定
 	spring_arm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	spring_arm->SetupAttachment(RootComponent);
-	spring_arm->TargetArmLength = 300.0f;
+	spring_arm->TargetArmLength = 100.0f;
 	spring_arm->bUsePawnControlRotation = true;
 	spring_arm->bDoCollisionTest = true;
 	spring_arm->bEnableCameraLag = true;
@@ -94,7 +94,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	if (g_player_hp < 0)
 	{
 		g_player_hp = 50;
-		//いったん初期地に戻す
+		//リスポーン地点に移動
 		SetActorLocation(startPos);
 	}
 }
@@ -196,8 +196,8 @@ void AMyPlayCharacter::Attack()
 
 		//攻撃範囲の判定
 		FVector Start = GetActorLocation();
-		FVector ForwardVector = GetActorForwardVector();
-		FVector End = Start + ForwardVector * 200.0f; //200ユニット前方
+		FVector ForwardVector = CameraComponent->GetForwardVector();
+		FVector End = Start + ForwardVector * 300.0f; //300ユニット前方
 
 		FHitResult HitResult;
 		FCollisionQueryParams Params;
@@ -281,4 +281,9 @@ void AMyPlayCharacter::AddBuff(UBuffDataBase* buffData)
 	//バフを適用
 	UBuffEffectBase* Buff = NewObject<UBuffEffectBase>(this);
 	Buff->ApplyEffect(this,buffData);
+}
+
+void AMyPlayCharacter::InputStatus()
+{
+	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
 }

@@ -39,8 +39,16 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform")
     float MaxDistance;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Platform")
+    float MaxmovementDeray = 50.0f;
+
+    void MoveToFloor(float);
+    void ResumeMove();
 private:
     FVector StartLocation;
+    FTimerHandle RestartMovement;
     float TraveledDistance;
+    float moving_deray;
     bool bMovingForward;
+    bool bCanMoved = true;
 };

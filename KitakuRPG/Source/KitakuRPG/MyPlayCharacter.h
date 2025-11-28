@@ -65,6 +65,8 @@ public:
 	//ステータス読み込み
 	class UStatusComponent* Status;
 
+	void InputStatus();
+	void OutputStatus();
 
 	UFUNCTION()
 	void MoveForward(float value);
