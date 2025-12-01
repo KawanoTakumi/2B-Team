@@ -18,7 +18,13 @@ void UMy_TitleWidget::NativeConstruct()
 
 void UMy_TitleWidget::OnButtonPlayClicked()
 {
-	UGameplayStatics::OpenLevel(this, FName("tutorial"));
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	FInputModeGameOnly InputMode;
+	PlayerController->SetInputMode(InputMode);
+	PlayerController->bShowMouseCursor = false;
+
+	UGameplayStatics::OpenLevel(this, FName("Stage_1"));
 }
 
 void UMy_TitleWidget::OnButtonQuitClicked()
