@@ -47,14 +47,15 @@ void AMyPlayCharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayCharacter::OnCapsuleBeginOverlap);
 
 	Status = this->FindComponentByClass<UStatusComponent>();
-	//ステータス読み込み
-	if (Status)
-	{
-		g_player_attack = Status->Read_Attck;
-		g_player_max_hp = Status->Read_MAX_HP;
-		g_player_speed = Status->Read_Speed;
-		g_player_hp = g_player_max_hp;
-	}
+	////ステータス読み込み
+	//if (Status)
+	//{
+	//	g_player_attack = Status->Read_Attck;
+	//	g_player_max_hp = Status->Read_MAX_HP;
+	//	g_player_speed = Status->Read_Speed;
+	//	g_player_hp = g_player_max_hp;
+	//}
+	InputStatus();
 	//HUD取得
 	HUDwidget = Cast<AMyPlayHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
@@ -271,6 +272,7 @@ void AMyPlayCharacter::LevelUp()
 			UE_LOG(LogTemp, Warning, TEXT("Not get widget"));
 		}
 	}
+	OutputStatus();
 }
 
 void AMyPlayCharacter::AddBuff(UBuffDataBase* buffData)
@@ -285,5 +287,31 @@ void AMyPlayCharacter::AddBuff(UBuffDataBase* buffData)
 
 void AMyPlayCharacter::InputStatus()
 {
+	FString stage_name = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
+	if (value == nullptr)return;
+
+	if (stage_name == "Stage_1")
+	{
+		if (Status)
+		{
+			value->Player_Attack = Status->Read_Attck;
+			value->Player_HP = Status->Read_MAX_HP;
+			value->Player_Speed = Status->Read_Speed;
+			value->Player_level = 1;
+			g_player_hp = g_player_max_hp;
+		}
+	}
+    g_player_level = value->Player_level;
+	g_player_attack = value->Player_Attack;
+	g_player_speed = value->Player_Speed;
+}
+
+void AMyPlayCharacter::OutputStatus()
+{
+	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
+
+	value->Player_level = g_player_level;
+	value->Player_Attack = g_player_attack;
+	value->Player_Speed = g_player_speed;
 }
