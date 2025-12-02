@@ -16,7 +16,7 @@ void ATitleHUD::BeginPlay()
 		UserWidget = UWidgetBlueprintLibrary::Create(GetWorld(), WidgetClass, PlayerController);
 
 		// Viewport‚É’Ç‰Á‚·‚é
-		UserWidget->AddToViewport(0);
+		UserWidget->AddToViewport();
 
 		// MouseCursor‚ð•\Ž¦‚·‚é
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, UserWidget, EMouseLockMode::DoNotLock, true, false);
