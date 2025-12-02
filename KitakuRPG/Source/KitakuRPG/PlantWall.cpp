@@ -44,7 +44,6 @@ void APlantWall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 			AMyPlayCharacter* TargetPlayer = Cast<AMyPlayCharacter>(OtherActor);
 			if (TargetPlayer && TargetPlayer->torchCount > 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("player hit"));
 				TargetPlayer->torchCount--;//ƒAƒCƒeƒ€‚ÌŠŽ”‚ð‚O‚É‚·‚é
 				this->Destroy();
 			}

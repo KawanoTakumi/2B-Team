@@ -40,9 +40,37 @@ void ASavePoint::Tick(float DeltaTime)
 void ASavePoint::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag("Player"))
+	Hit_Effect();
+	switch (id)
 	{
-		AMyPlayCharacter* player = Cast<AMyPlayCharacter>(OtherActor);
-		player->startPos = point;
+	case ID::SAVE: 
+	{
+		if (OtherActor->ActorHasTag("Player"))
+		{
+			AMyPlayCharacter* player = Cast<AMyPlayCharacter>(OtherActor);
+			player->startPos = point;
+			
+		}
+	}break;
+	case ID::BUTTON:
+	{
+		if (!breakActor)return;
+		else
+		{
+			breakActor->Destroy();
+		}
+	}break;
+	}
+}
+void ASavePoint::Hit_Effect()
+{
+	if (particle)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			particle,
+			GetActorLocation(),
+			GetActorRotation()
+		);
 	}
 }
