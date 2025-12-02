@@ -3,10 +3,20 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/UserWidget.h" // ’Ç‰Á: UUserWidget ‚ÌŠ®‘S‚ÈŒ^î•ñ‚ğæ“¾
 
+
+ATitleHUD::ATitleHUD()
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetBPClass(TEXT("/Game/egawa/UI/BPW_TitleMenu"));
+	if (WidgetBPClass.Succeeded())
+	{
+		WidgetClass = WidgetBPClass.Class;
+	}
+}
+
 void ATitleHUD::BeginPlay()
 {
-	FString Path = TEXT("/Game/egawa/UI/BPW_TitleMenu.BPW_TitleMenu_C");
-	TSubclassOf<UUserWidget> WidgetClass = TSoftClassPtr<UUserWidget>(FSoftObjectPath(*Path)).LoadSynchronous();
+
+	Super::BeginPlay();
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
@@ -16,7 +26,7 @@ void ATitleHUD::BeginPlay()
 		UserWidget = UWidgetBlueprintLibrary::Create(GetWorld(), WidgetClass, PlayerController);
 
 		// Viewport‚É’Ç‰Á‚·‚é
-		UserWidget->AddToViewport();
+		UserWidget->AddToViewport(0);
 
 		// MouseCursor‚ğ•\¦‚·‚é
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, UserWidget, EMouseLockMode::DoNotLock, true, false);

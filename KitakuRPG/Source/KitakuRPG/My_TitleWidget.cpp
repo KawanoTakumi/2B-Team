@@ -20,11 +20,17 @@ void UMy_TitleWidget::OnButtonPlayClicked()
 {
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
+	// UIを閉じる
+	RemoveFromParent();
+
+	// 入力モードをゲーム専用に
 	FInputModeGameOnly InputMode;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = false;
 
+	// レベル遷移
 	UGameplayStatics::OpenLevel(this, FName("Stage_1"));
+
 }
 
 void UMy_TitleWidget::OnButtonQuitClicked()
