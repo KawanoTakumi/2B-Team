@@ -3,20 +3,10 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/UserWidget.h" // ’Ç‰Á: UUserWidget ‚ÌŠ®‘S‚ÈŒ^î•ñ‚ğæ“¾
 
-
-ATitleHUD::ATitleHUD()
-{
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetBPClass(TEXT("/Game/egawa/UI/BPW_TitleMenu"));
-	if (WidgetBPClass.Succeeded())
-	{
-		WidgetClass = WidgetBPClass.Class;
-	}
-}
-
 void ATitleHUD::BeginPlay()
 {
-
-	Super::BeginPlay();
+	FString Path = TEXT("/Game/egawa/UI/BPW_TitleMenu.BPW_TitleMenu_C");
+	TSubclassOf<UUserWidget> WidgetClass = TSoftClassPtr<UUserWidget>(FSoftObjectPath(*Path)).LoadSynchronous();
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
