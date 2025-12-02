@@ -198,7 +198,7 @@ void AMyPlayCharacter::Attack()
 		//攻撃範囲の判定
 		FVector Start = GetActorLocation();
 		FVector ForwardVector = CameraComponent->GetForwardVector();
-		FVector End = Start + ForwardVector * 300.0f; //300ユニット前方
+		FVector End = Start + ForwardVector * 600.0f; //600ユニット前方
 
 		FHitResult HitResult;
 		FCollisionQueryParams Params;
@@ -299,9 +299,10 @@ void AMyPlayCharacter::InputStatus()
 			value->Player_HP = Status->Read_MAX_HP;
 			value->Player_Speed = Status->Read_Speed;
 			value->Player_level = 1;
-			g_player_hp = g_player_max_hp;
 		}
 	}
+	g_player_max_hp = value->Player_HP;
+	g_player_hp = g_player_max_hp;
     g_player_level = value->Player_level;
 	g_player_attack = value->Player_Attack;
 	g_player_speed = value->Player_Speed;

@@ -248,9 +248,9 @@ void AEnemyAction::ActionInterval(AActor* actor)
 	{
 		CanAttack = false;
 		CPlayer->GetDamage(attack);
-		FVector knockback = GetActorForwardVector() * 20.0f;
-		knockback.Z = 30.0f;
-		CPlayer->LaunchCharacter(knockback,true,true);
+		//FVector knockback = GetActorForwardVector() * 20.0f;
+		//knockback.Z = 30.0f;
+		//CPlayer->LaunchCharacter(knockback,true,true);
 	}
 }
 
