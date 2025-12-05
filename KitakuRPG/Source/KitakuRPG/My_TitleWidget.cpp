@@ -26,7 +26,7 @@ void UMy_TitleWidget::OnButtonPlayClicked()
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = false;
 
-	UGameplayStatics::OpenLevel(this, FName("/Game/Stage/Stage_1"));
+	UGameplayStatics::OpenLevel(this, FName("Stage1_2"));
 }
 
 void UMy_TitleWidget::OnButtonQuitClicked()

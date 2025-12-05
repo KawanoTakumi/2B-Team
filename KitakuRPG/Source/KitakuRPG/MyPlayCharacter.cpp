@@ -285,7 +285,7 @@ void AMyPlayCharacter::InputStatus()
 	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
 	if (value == nullptr)return;
 
-	if (stage_name == "Stage_1")
+	if (stage_name == "Stage1_2")
 	{
 		if (Status)
 		{
