@@ -154,13 +154,13 @@ void AEnemyAction::SetStatus()
 
 	if (EStatus)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Get Status"));
 		max_hp = EStatus->Read_MAX_HP;
 		attack = EStatus->Read_Attck;
 		speed = EStatus->Read_Speed;
 		exp = EStatus->Read_EXP;
 		AttackTimer = jump_Cooldown;
 	}
-
 }
 
 //ƒ_ƒ[ƒWŽæ“¾ŠÖ”
@@ -248,9 +248,6 @@ void AEnemyAction::ActionInterval(AActor* actor)
 	{
 		CanAttack = false;
 		CPlayer->GetDamage(attack);
-		FVector knockback = GetActorForwardVector() * 20.0f;
-		knockback.Z = 30.0f;
-		CPlayer->LaunchCharacter(knockback,true,true);
 	}
 }
 
