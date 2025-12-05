@@ -11,6 +11,9 @@ class KITAKURPG_API ATitleHUD : public AHUD
 {
 	GENERATED_BODY()
 	
+public:
+	ATitleHUD();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -18,7 +21,8 @@ public:
 	void CloseTitle();
 
 private:
+	TSubclassOf<class UUserWidget> WidgetClass;
+
 	UPROPERTY()
 	UUserWidget* UserWidget;
-
 };

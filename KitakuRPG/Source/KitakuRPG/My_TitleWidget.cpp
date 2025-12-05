@@ -20,11 +20,13 @@ void UMy_TitleWidget::OnButtonPlayClicked()
 {
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
+	RemoveFromParent();
+
 	FInputModeGameOnly InputMode;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = false;
 
-	UGameplayStatics::OpenLevel(this, FName("Stage_1"));
+	UGameplayStatics::OpenLevel(this, FName("tutorial"));
 }
 
 void UMy_TitleWidget::OnButtonQuitClicked()
