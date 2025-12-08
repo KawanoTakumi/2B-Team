@@ -77,7 +77,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	if (FA)
 	{
 		time++;
-		if (time == 100)
+		if (time == 80)
 		{
 			time = 0;
 			FA = false;
