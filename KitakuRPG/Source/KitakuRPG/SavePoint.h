@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "SavePoint.generated.h"
 
+UENUM(BlueprintType)
+enum class MoveType : uint8
+{
+	SAVE,
+	BREAK,
+};
+/**
+*
+**/
 UCLASS()
 class KITAKURPG_API ASavePoint : public AActor
 {
@@ -22,6 +31,11 @@ public:
 	UStaticMeshComponent* BoxMesh;
 	UPROPERTY(VisibleAnywhere, Category = "MESH")
 	class UBoxComponent* hit_collision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MESH")
+	MoveType move = MoveType::SAVE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MESH")
+	AActor* BreakActor = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,3 +50,4 @@ public:
 		bool bFromSweep, const FHitResult& SweepResult);
 
 };
+

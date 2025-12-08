@@ -42,7 +42,17 @@ void ASavePoint::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	if (OtherActor->ActorHasTag("Player"))
 	{
-		AMyPlayCharacter* player = Cast<AMyPlayCharacter>(OtherActor);
-		player->startPos = point;
+		//タイプに応じて挙動を変更させる
+		if (move == MoveType::SAVE)
+		{
+			AMyPlayCharacter* player = Cast<AMyPlayCharacter>(OtherActor);
+			player->startPos = point;
+		}
+		else if (move == MoveType::BREAK)
+		{
+			//アクターが設定されていたらそれを破壊する
+			if (BreakActor != nullptr)
+				BreakActor->Destroy();
+		}
 	}
 }
