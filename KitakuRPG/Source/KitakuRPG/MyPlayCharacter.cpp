@@ -77,7 +77,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	if (FA)
 	{
 		time++;
-		if (time == 100)
+		if (time == 150)
 		{
 			time = 0;
 			FA = false;
@@ -293,9 +293,9 @@ void AMyPlayCharacter::InputStatus()
 			value->Player_HP = Status->Read_MAX_HP;
 			value->Player_Speed = Status->Read_Speed;
 			value->Player_level = 1;
-			g_player_max_hp = value->Player_HP;;
 		}
 	}
+	g_player_max_hp = value->Player_HP;;
 	g_player_hp = g_player_max_hp;
     g_player_level = value->Player_level;
 	g_player_attack = value->Player_Attack;

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
 #include "SavePoint.generated.h"
 
@@ -36,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MESH")
 	AActor* BreakActor = nullptr;
+	//パーティクル
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* particle = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
