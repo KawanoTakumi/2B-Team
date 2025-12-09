@@ -191,8 +191,8 @@ void AMyPlayCharacter::Attack()
 		//攻撃範囲の判定
 		FVector Start = GetActorLocation();//検知開始場所
 		FVector ForwardVector = CameraComponent->GetForwardVector();//検知終了場所
-		FVector End = Start + ForwardVector * 500.0f; //500ユニット前方
-		FVector Box_Scale = {100,100,100};
+		FVector End = Start + ForwardVector * 30.0f; //200ユニット前方
+		FVector Box_Scale = {85,85,85};
 		FQuat rota = FQuat::Identity;
 
 		TArray<FHitResult> hit_result;
