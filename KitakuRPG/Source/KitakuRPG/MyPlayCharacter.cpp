@@ -189,35 +189,53 @@ void AMyPlayCharacter::Attack()
 		}
 
 		//攻撃範囲の判定
-		FVector Start = GetActorLocation();
-		FVector ForwardVector = CameraComponent->GetForwardVector();
-		FVector End = Start + ForwardVector * 300.0f; //300ユニット前方
+		FVector Start = GetActorLocation();//検知開始場所
+		FVector ForwardVector = CameraComponent->GetForwardVector();//検知終了場所
+		FVector End = Start + ForwardVector * 500.0f; //500ユニット前方
+		FVector Box_Scale = {100,100,100};
+		FQuat rota = FQuat::Identity;
 
+		TArray<FHitResult> hit_result;
 		FHitResult HitResult;
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this); //自分自身は無視
 
-		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
-			End, ECC_Pawn, Params);
+		//bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start,
+		//	End, ECC_Pawn, Params);
 
-		if (bHit && HitResult.GetActor())
+		bool bHit = GetWorld()->SweepMultiByChannel(hit_result, Start, End, rota, ECC_Pawn, FCollisionShape::MakeBox(Box_Scale),Params);
+
+		if (bHit)
 		{
+			for (auto& Hit : hit_result)
+			{
+				// 壊れるBOXかどうか判定
+				Abreakbox* HitBox = Cast<Abreakbox>(Hit.GetActor());
+				if (HitBox)
+				{
+					HitBox->OnHitByPlayer(g_player_attack); // プレイヤーの攻撃力を渡す
+				}
+				else
+				{
+					//敵にダメージを与える
+					UGameplayStatics::ApplyDamage(Hit.GetActor(), g_player_attack,
+						GetController(), this, UDamageType::StaticClass());
+				}
 
-			// 壊れるBOXかどうか判定
-			Abreakbox* HitBox = Cast<Abreakbox>(HitResult.GetActor());
-			if (HitBox)
-			{
-				HitBox->OnHitByPlayer(g_player_attack); // プレイヤーの攻撃力を渡す
 			}
-			else
-			{
-				//敵にダメージを与える
-				UGameplayStatics::ApplyDamage(HitResult.GetActor(), g_player_attack,
-					GetController(), this, UDamageType::StaticClass());
-			}
+
 		}
+		// デバッグ表示 (箱のトレースを可視化)
+		//DrawDebugBox(
+		//	GetWorld(),
+		//	End,
+		//	Box_Scale,
+		//	rota,
+		//	FColor::Green,
+		//	false,
+		//	2.0f // 表示時間
+		//);
 	}
-
 }
 //ダメージ取得(TakeDamageの代替)
 void AMyPlayCharacter::GetDamage(int damage)

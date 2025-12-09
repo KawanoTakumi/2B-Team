@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
 #include "PlantWall.generated.h"
 
@@ -35,6 +37,9 @@ public:
 	//球体メッシュ
 	UPROPERTY(VisibleAnywhere, Category = "MESH")
 	class USphereComponent* TriggerSphere;
+	//パーティクル
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* particle = nullptr;
 
 	
 	//プレイヤー索敵、オブジェクト破壊関数
