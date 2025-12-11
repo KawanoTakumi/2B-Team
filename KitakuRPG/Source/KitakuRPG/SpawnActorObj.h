@@ -18,11 +18,13 @@ public:
 	// Sets default values for this actor's properties
 	ASpawnActorObj();
 	//スポーンさせるアクター
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Acotr")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor")
 	TSubclassOf<AEnemyAction> spawn_object;
 	//再スポーンまでにかかる時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor")
 	float spawn_interval = 20.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor")
+	bool ViewRadius = true;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actor")
 	class USphereComponent* hit_collision;
 	//パーティクル
@@ -43,6 +45,6 @@ public:
 
 	void Spawn_Ac();
 private:
-	bool m_can_spawn_actor = false;
+	bool m_can_spawn_actor = true;
 	float  m_spawn_timer = spawn_interval;
 };
