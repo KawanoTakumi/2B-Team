@@ -13,16 +13,16 @@ UCLASS()
 class KITAKURPG_API ASpawnActorObj : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ASpawnActorObj();
 	//スポーンさせるアクター
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Acotr")
-	TSubclassOf<AEnemyAction> spawn_object;	
+	TSubclassOf<AEnemyAction> spawn_object;
 	//再スポーンまでにかかる時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor")
-	float spawn_interval = 300.0f;
+	float spawn_interval = 20.0f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actor")
 	class USphereComponent* hit_collision;
 	//パーティクル
@@ -33,15 +33,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void SpawnActor(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	void ASpawn(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
 
+	void Spawn_Ac();
 private:
-	bool m_can_spawn_actor = true;
-	float m_spawn_timer = spawn_interval;
+	bool m_can_spawn_actor = false;
+	float  m_spawn_timer = spawn_interval;
 };

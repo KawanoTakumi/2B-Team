@@ -23,7 +23,17 @@ ASpawnActorObj::ASpawnActorObj()
 void ASpawnActorObj::BeginPlay()
 {
 	Super::BeginPlay();
-	hit_collision->OnComponentBeginOverlap.AddDynamic(this, &ASpawnActorObj::SpawnActor);
+	hit_collision->OnComponentBeginOverlap.AddDynamic(this, &ASpawnActorObj::ASpawn);
+	DrawDebugSphere(
+	GetWorld(),
+	GetActorLocation(),
+	hit_collision->GetScaledSphereRadius(),
+	16,
+	FColor::Green,
+	true,
+	1.0f // 表示時間
+);
+
 }
 
 // Called every frame
@@ -32,31 +42,38 @@ void ASpawnActorObj::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	//スポーン可能になるまでの時間を計測
 	if (m_spawn_timer > 0)
-		m_spawn_timer--;
+	{
+		m_spawn_timer -= DeltaTime;
+	}
 	else
 	{
-		m_can_spawn_actor = true;
+		Spawn_Ac();
 	}
-
 }
 
 //プレイヤーが当たったら敵を生成
-void ASpawnActorObj::SpawnActor(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+void ASpawnActorObj::ASpawn(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
+{
+	m_can_spawn_actor = true;
+}
+
+void ASpawnActorObj::Spawn_Ac()
 {
 	if (m_can_spawn_actor && spawn_object)
 	{
 		if (particle)
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),particle,GetActorLocation(),GetActorRotation());
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), particle, GetActorLocation(), GetActorRotation());
 		}
 		FRotator SpawnRotation = GetActorRotation();
 		FVector SpawnLocation = GetActorLocation();
-		SpawnLocation += GetActorUpVector() * 20.0f;
+		SpawnLocation += GetActorUpVector() * 40.0f;
 		FActorSpawnParameters param;
-
-		GetWorld()->SpawnActor<AEnemyAction>(spawn_object.Get(), SpawnLocation, SpawnRotation, param);
+		UE_LOG(LogTemp, Warning, TEXT("called spawn character"));
+		GetWorld()->SpawnActor<AEnemyAction>(spawn_object, SpawnLocation, SpawnRotation, param);
 		m_spawn_timer = spawn_interval;
 		m_can_spawn_actor = false;
 	}
+
 }
