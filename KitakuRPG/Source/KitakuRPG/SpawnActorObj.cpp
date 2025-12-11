@@ -24,15 +24,6 @@ void ASpawnActorObj::BeginPlay()
 {
 	Super::BeginPlay();
 	hit_collision->OnComponentBeginOverlap.AddDynamic(this, &ASpawnActorObj::ASpawn);
-	DrawDebugSphere(
-		GetWorld(),
-		GetActorLocation(),
-		hit_collision->GetScaledSphereRadius(),
-		16,
-		FColor::Green,
-		true,
-		1.0f // •\Ž¦ŽžŠÔ
-	);
 }
 
 // Called every frame
