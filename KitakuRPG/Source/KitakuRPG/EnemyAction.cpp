@@ -38,6 +38,8 @@ void AEnemyAction::BeginPlay()
 	Super::BeginPlay();
 	SetStatus();
 	CanJumpToPlayer = true;
+	CanAttack = false;
+	AttackTimer = 60.0f * 2;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
 	attackedSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::Attacked);
 	E_hp = max_hp;//最大体力に設定
@@ -49,8 +51,8 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
+	if (GetCharacterMovement() == nullptr)
+		UE_LOG(LogTemp, Warning, TEXT("Not Character movement"));
 	//攻撃のクールタイムを設定
 	if (AttackTimer > 0 && !CanAttack)
 	{
@@ -59,10 +61,7 @@ void AEnemyAction::Tick(float DeltaTime)
 		{
 			CanAttack = true;
 			AttackTimer = 60.0f* 2;//攻撃のタイマー
-
-
 		}
-			
 	}
 
 	TurnToPlayer();
@@ -210,12 +209,12 @@ void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActo
 	CPlayer = nullptr;
 	hit = nullptr;//当たったアクターを初期化
 }
-
+//フラグリセット
 void AEnemyAction::ResetJump()
 {
 	CanJumpToPlayer = true;
 }
-
+//アクターをドロップ
 void AEnemyAction::DropItem()
 {
 	if (spawn_object)
@@ -239,6 +238,7 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		ActionInterval(hit);
 	}
 }
+//ダメージを生成
 void AEnemyAction::ActionInterval(AActor* actor)
 {
 	if (!actor) return;
@@ -264,7 +264,7 @@ void AEnemyAction::ChooseNewDirection()
 	int32 Index = FMath::RandRange(0, Directions.Num() - 1);
 	CurrentDirection = Directions[Index];
 }
-
+//エフェクト関数
 void AEnemyAction::Hit_Effect()
 {
 	if (particle)

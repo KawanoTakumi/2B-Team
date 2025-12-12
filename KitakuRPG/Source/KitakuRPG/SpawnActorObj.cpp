@@ -56,9 +56,13 @@ void ASpawnActorObj::Spawn_Ac()
 		}
 		FRotator SpawnRotation = GetActorRotation();
 		FVector SpawnLocation = GetActorLocation();
-		SpawnLocation += GetActorUpVector() * 40.0f;
+		SpawnLocation += GetActorUpVector() * 100.0f;
 		FActorSpawnParameters param;
-		GetWorld()->SpawnActor<AEnemyAction>(spawn_object, SpawnLocation, SpawnRotation, param);
+		AEnemyAction* Enemy = GetWorld()->SpawnActor<AEnemyAction>(spawn_object, SpawnLocation, SpawnRotation, param);
+		if (Enemy)
+		{
+			Enemy->SpawnDefaultController();
+		}
 		m_spawn_timer = spawn_interval;
 		m_can_spawn_actor = false;
 	}
