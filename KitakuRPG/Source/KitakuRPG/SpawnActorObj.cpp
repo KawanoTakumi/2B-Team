@@ -24,6 +24,7 @@ void ASpawnActorObj::BeginPlay()
 {
 	Super::BeginPlay();
 	hit_collision->OnComponentBeginOverlap.AddDynamic(this, &ASpawnActorObj::ASpawn);
+	hit_collision->OnComponentEndOverlap.AddDynamic(this, &ASpawnActorObj::ADeleteSpawn);
 }
 
 // Called every frame
@@ -42,7 +43,13 @@ void ASpawnActorObj::Tick(float DeltaTime)
 void ASpawnActorObj::ASpawn(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
+	
 	m_can_spawn_actor = true;
+}
+void ASpawnActorObj::ADeleteSpawn(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	m_can_spawn_actor = false;
 }
 
 void ASpawnActorObj::Spawn_Ac()

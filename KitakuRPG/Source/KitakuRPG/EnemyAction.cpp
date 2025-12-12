@@ -78,8 +78,8 @@ void AEnemyAction::Tick(float DeltaTime)
 
 			if (!CanJumpToPlayer)return;
 			//取得したベクトルからジャンプする方向に発射
-			FVector LaunchVelocity = (Direction)*jump_Power * 5;
-			LaunchVelocity.Z = jump_Height * 3;
+			FVector LaunchVelocity = (Direction)*jump_Power;
+			LaunchVelocity.Z = jump_Height;
 			LaunchCharacter(LaunchVelocity, true, true);
 
 			CanJumpToPlayer = false;
@@ -222,7 +222,8 @@ void AEnemyAction::DropItem()
 		FActorSpawnParameters param;
 		param.Owner = this;
 
-		GetWorld()->SpawnActor<AActor>(spawn_object, GetActorLocation(), GetActorRotation(), param);
+		AActor* actor = GetWorld()->SpawnActor<AActor>(spawn_object, GetActorLocation(), GetActorRotation(), param);
+
 	}
 }
 
