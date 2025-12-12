@@ -77,8 +77,13 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	if (FA)
 	{
 		time++;
-		if (time == 80)
+		//パーティクルを発生させる
+		if (particle && hit_enemy && time == 40)
+			Hit_Effect();
+
+		if (time > 80)
 		{
+
 			time = 0;
 			FA = false;
 		}
@@ -208,6 +213,7 @@ void AMyPlayCharacter::Attack()
 				UPrimitiveComponent* Hit_cmp = Hit.GetComponent();
 				if (Hit_cmp && Hit_cmp->ComponentHasTag("Body"))
 				{
+					hit_enemy = true;
 					//敵にダメージを与える
 					UGameplayStatics::ApplyDamage(Hit.GetActor(), g_player_attack,
 						GetController(), this, UDamageType::StaticClass());
@@ -313,4 +319,19 @@ void AMyPlayCharacter::OutputStatus()
 	value->Player_level = g_player_level;
 	value->Player_Attack = g_player_attack;
 	value->Player_Speed = g_player_speed;
+}
+
+//エフェクト関数
+void AMyPlayCharacter::Hit_Effect()
+{
+	if (particle)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			particle,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+	hit_enemy = false;
 }

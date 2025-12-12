@@ -167,7 +167,6 @@ float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	E_hp -= GetDamage;
-	Hit_Effect();
 	if (E_hp < 1)
 	{
 		//プレイヤーにEXPを付与
@@ -264,17 +263,4 @@ void AEnemyAction::ChooseNewDirection()
 
 	int32 Index = FMath::RandRange(0, Directions.Num() - 1);
 	CurrentDirection = Directions[Index];
-}
-//エフェクト関数
-void AEnemyAction::Hit_Effect()
-{
-	if (particle)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			GetWorld(),
-			particle,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
 }

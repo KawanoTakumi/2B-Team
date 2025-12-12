@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "NiagaraFunctionLibrary.h"
-#include "NiagaraSystem.h"
 #include "EBullet.h"
 #include "EnemyAction.generated.h"
 
@@ -60,9 +58,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
 	float jump_Height = 400.0f;
 
-	//パーティクル
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
-	UNiagaraSystem* particle;
 	//スポーンさせたいオブジェクト
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SPAWN")
 	TSubclassOf<AActor> spawn_object;
@@ -87,9 +82,6 @@ public:
 	void TurnToPlayer();
 	void ActionInterval(AActor* actor);
 	void DropItem();
-	//エフェクト発生関数
-	UFUNCTION()
-	void Hit_Effect();
 
 	void ResetJump();
 	//移動している方向を前として角度を回転させる
