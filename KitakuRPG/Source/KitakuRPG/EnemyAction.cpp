@@ -78,8 +78,8 @@ void AEnemyAction::Tick(float DeltaTime)
 
 			if (!CanJumpToPlayer)return;
 			//取得したベクトルからジャンプする方向に発射
-			FVector LaunchVelocity = (Direction)*jump_Power * 5;
-			LaunchVelocity.Z = jump_Height * 3;
+			FVector LaunchVelocity = (Direction)*jump_Power;
+			LaunchVelocity.Z = jump_Height;
 			LaunchCharacter(LaunchVelocity, true, true);
 
 			CanJumpToPlayer = false;
@@ -167,7 +167,6 @@ float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	E_hp -= GetDamage;
-	Hit_Effect();
 	if (E_hp < 1)
 	{
 		//プレイヤーにEXPを付与
@@ -222,7 +221,8 @@ void AEnemyAction::DropItem()
 		FActorSpawnParameters param;
 		param.Owner = this;
 
-		GetWorld()->SpawnActor<AActor>(spawn_object, GetActorLocation(), GetActorRotation(), param);
+		AActor* actor = GetWorld()->SpawnActor<AActor>(spawn_object, GetActorLocation(), GetActorRotation(), param);
+
 	}
 }
 
@@ -263,17 +263,4 @@ void AEnemyAction::ChooseNewDirection()
 
 	int32 Index = FMath::RandRange(0, Directions.Num() - 1);
 	CurrentDirection = Directions[Index];
-}
-//エフェクト関数
-void AEnemyAction::Hit_Effect()
-{
-	if (particle)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			GetWorld(),
-			particle,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
 }

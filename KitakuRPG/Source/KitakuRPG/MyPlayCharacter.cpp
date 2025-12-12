@@ -77,8 +77,13 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	if (FA)
 	{
 		time++;
-		if (time == 80)
+		//パーティクルを発生させる
+		if (particle && hit_enemy && time == 40)
+			Hit_Effect();
+
+		if (time > 80)
 		{
+
 			time = 0;
 			FA = false;
 		}
@@ -87,8 +92,8 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	//体力がなくなったら
 	if (g_player_hp < 0)
 	{
+		//一時的に最終チェックポイントに移動
 		g_player_hp = 50;
-		//リスポーン地点に移動
 		SetActorLocation(startPos);
 	}
 }
@@ -130,7 +135,7 @@ void AMyPlayCharacter::MoveForward(float value)
 void AMyPlayCharacter::MoveRight(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, value * g_player_speed);
+	AddMovementInput(Direction, value * g_player_speed * 30);
 }
 
 void AMyPlayCharacter::StartJump()
@@ -192,11 +197,10 @@ void AMyPlayCharacter::Attack()
 		FVector Start = GetActorLocation();//検知開始場所
 		FVector ForwardVector = CameraComponent->GetForwardVector();//検知終了場所
 		FVector End = Start + ForwardVector * 130.0f;
-		FVector Box_Scale = {100,100,100};
+		FVector Box_Scale = {100,100,100};//あたり判定の箱を設定
 		FQuat rota = FQuat::Identity;
 
 		TArray<FHitResult> hit_result;
-		FHitResult HitResult;
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this); //自分自身は無視
 
@@ -209,6 +213,7 @@ void AMyPlayCharacter::Attack()
 				UPrimitiveComponent* Hit_cmp = Hit.GetComponent();
 				if (Hit_cmp && Hit_cmp->ComponentHasTag("Body"))
 				{
+					hit_enemy = true;
 					//敵にダメージを与える
 					UGameplayStatics::ApplyDamage(Hit.GetActor(), g_player_attack,
 						GetController(), this, UDamageType::StaticClass());
@@ -221,16 +226,6 @@ void AMyPlayCharacter::Attack()
 				}
 			}
 		}
-		// デバッグ表示 (箱のトレースを可視化)
-		//DrawDebugBox(
-		//	GetWorld(),
-		//	End,
-		//	Box_Scale,
-		//	rota,
-		//	FColor::Green,
-		//	false,
-		//	2.0f // 表示時間
-		//);
 	}
 }
 //ダメージ取得(TakeDamageの代替)
@@ -253,9 +248,10 @@ void AMyPlayCharacter::LevelUp()
 {
 	g_player_level++;
 	P_EXP = 0;
-	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.2f);//次のレベルまでの最大経験値量を指定
+	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.1f);//次のレベルまでの最大経験値量を指定
 	if (LevelWidget)
 	{
+		//レベルアップ用のウィジェットを生成
 		ULevelUpWidget* LevelUpWidget = CreateWidget<ULevelUpWidget>(GetWorld(), LevelWidget);
 
 		if (LevelUpWidget)
@@ -298,7 +294,7 @@ void AMyPlayCharacter::InputStatus()
 	FString stage_name = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
 	if (value == nullptr)return;
-
+	//初期ステージのみステータスデータを保存
 	if (stage_name == "Stage1_2")
 	{
 		if (Status)
@@ -323,4 +319,19 @@ void AMyPlayCharacter::OutputStatus()
 	value->Player_level = g_player_level;
 	value->Player_Attack = g_player_attack;
 	value->Player_Speed = g_player_speed;
+}
+
+//エフェクト関数
+void AMyPlayCharacter::Hit_Effect()
+{
+	if (particle)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			particle,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+	hit_enemy = false;
 }

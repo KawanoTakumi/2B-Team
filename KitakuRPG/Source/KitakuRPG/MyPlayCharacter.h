@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -58,6 +60,7 @@ public:
 	int P_max_EXP = 30;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FLAG")
 	bool FA = false;
+	bool hit_enemy = false;
 	int time = 0;
 	//初期位置
 	FVector startPos;
@@ -105,6 +108,9 @@ public:
 	//レベルアップ
 	UFUNCTION()
 	void LevelUp();
+	//エフェクト発生関数
+	UFUNCTION()
+	void Hit_Effect();
 
 	//バフ適用
 	UFUNCTION()
@@ -117,4 +123,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget>LevelWidget;
+	//パーティクル
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* particle;
+
 };

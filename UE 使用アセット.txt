@@ -1,0 +1,24 @@
+UE 使用アセット
+
+//キャラクター
+
+・Free3D Wolf
+・MixAmo Ch39_nonPBR
+
+//アニメーション
+・MixAmo
+
+Idol
+Work
+Jump
+
+//オブジェクト
+Free 3D Tree.fbx
+Unreal WoodenBox
+
+//サウンド
+
+BGM 
+ゴブリンの鳴き声２
+スライムの攻撃
+軽いパンチ１
