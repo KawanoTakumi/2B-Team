@@ -51,6 +51,15 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (m_death_flag)
+	{
+		m_death_timer++;
+		if (m_death_timer >= 40.0f)
+			this->Destroy();
+	}
+
+
 	if (GetCharacterMovement() == nullptr)
 		UE_LOG(LogTemp, Warning, TEXT("Not Character movement"));
 	//攻撃のクールタイムを設定
@@ -178,7 +187,7 @@ float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		//ドロップアイテム
 		DropItem();
 		//オブジェクト削除
-		this->Destroy();
+		m_death_flag = true;
 	}
 	return GetDamage;
 }

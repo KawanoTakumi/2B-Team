@@ -91,6 +91,8 @@ private:
 	float ChangeDirectionInterval = 2.0f;
 	float TimeSinceLastChange = 0.0f;
 	bool CanHitPlayer = false;//ƒvƒŒƒCƒ„[‚ª“–‚½‚Á‚½‚©‚Ç‚¤‚©
+	bool m_death_flag = false;
+	float m_death_timer = 0.0f;
 	void ChooseNewDirection();
 	class AMyPlayCharacter* CPlayer;
 	bool CanAttack = false;//UŒ‚‚Å‚«‚é‚©‚Ç‚¤‚©
