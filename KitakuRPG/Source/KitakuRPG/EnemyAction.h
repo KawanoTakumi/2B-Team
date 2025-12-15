@@ -41,11 +41,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
 	class USphereComponent* attackedSphere;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MOVE")
+	float move_speed = 3.0f;
 
 	//ジャンプできるかどうか（クールダウン判定）
 	bool CanJumpToPlayer = false;
-	
-
 	//ジャンプのクールダウン時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
 	float jump_Cooldown = 15.0f;
