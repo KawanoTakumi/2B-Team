@@ -49,10 +49,13 @@ public:
 	UPROPERTY()
 	int keyCount = 0;
 	//ステータス
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "STATUS")
 	int m_player_attack = 1;
 	int m_player_max_hp = 1;
 	int m_player_level = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "STATUS")
 	float m_player_hp = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "STATUS")
 	float m_player_speed = 1;
 	float m_heal_by_time = 0;//自然回復力
 	int P_EXP = 1;
@@ -66,7 +69,6 @@ public:
 	
 	//ステータス読み込み
 	class UStatusComponent* Status;
-
 	void InputStatus();
 	void OutputStatus();
 
