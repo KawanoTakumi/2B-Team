@@ -82,7 +82,6 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 		{
 			if(particle)
 				Hit_Effect();//エフェクト作成
-			SearchAttackRange();//攻撃範囲を設定
 		}
 
 		if (m_time > 80)
@@ -234,6 +233,7 @@ void AMyPlayCharacter::Attack()
 			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 			m_attack_flag = true;
 		}
+		SearchAttackRange();//攻撃範囲を設定
 	}
 }
 //ダメージ取得(TakeDamageの代替)
