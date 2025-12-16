@@ -41,10 +41,11 @@ void AEnemyAction::BeginPlay()
 	CanAttack = false;
 	AttackTimer = 60.0f * 2;
 	detectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::OnPlayerDetected);	
+	detectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyAction::OnPlayerEnded);	
 	attackedSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAction::Attacked);
 	E_hp = max_hp;//最大体力に設定
 	
-	ChooseNewDirection(); // 初期方向を決定
+	//ChooseNewDirection(); // 初期方向を決定
 }
 
 // Called every frame
@@ -86,8 +87,8 @@ void AEnemyAction::Tick(float DeltaTime)
 
 			if (!CanJumpToPlayer)return;
 			//取得したベクトルからジャンプする方向に発射
-			FVector LaunchVelocity = (Direction)*jump_Power;
-			LaunchVelocity.Z = jump_Height;
+			FVector LaunchVelocity = (Direction)*jump_Power* 3;
+			LaunchVelocity.Z = jump_Height * 3;
 			LaunchCharacter(LaunchVelocity, true, true);
 
 			CanJumpToPlayer = false;
@@ -131,15 +132,15 @@ void AEnemyAction::Tick(float DeltaTime)
 	}
 	//前後左右にランダムに移動する
 // 一定時間ごとに方向を変更
-	if (!CanJumpToPlayer)
-	{
-		TimeSinceLastChange = DeltaTime;
-		if (TimeSinceLastChange >= ChangeDirectionInterval)
-		{
-			ChooseNewDirection();
-			TimeSinceLastChange = 0.0f;
-		}
-	}
+	//if (!CanJumpToPlayer)
+	//{
+	//	TimeSinceLastChange = DeltaTime;
+	//	if (TimeSinceLastChange >= ChangeDirectionInterval)
+	//	{
+	//		ChooseNewDirection();
+	//		TimeSinceLastChange = 0.0f;
+	//	}
+	//}
 	//移動している方向を前として回転させる
 	FVector Velocity = GetVelocity();
 	if (!Velocity.IsNearlyZero())
@@ -220,7 +221,7 @@ void AEnemyAction::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor*
 }
 //プレイヤーが索敵範囲外にいった場合
 void AEnemyAction::OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp)
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor)return;
 	CanHitPlayer = false;
@@ -270,6 +271,8 @@ void AEnemyAction::ActionInterval(AActor* actor)
 	if (CPlayer && CanAttack && CanHitPlayer)
 	{
 		CanAttack = false;
+		if (particle)
+			SpawnEffect(particle);
 		CPlayer->GetDamage(attack);
 	}
 }
@@ -287,4 +290,13 @@ void AEnemyAction::ChooseNewDirection()
 
 	int32 Index = FMath::RandRange(0, Directions.Num() - 1);
 	CurrentDirection = Directions[Index];
+}
+
+void AEnemyAction::SpawnEffect(UNiagaraSystem* Uparticle)
+{
+	if (Uparticle)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Uparticle, GetActorLocation(), GetActorRotation());
+	}
+
 }

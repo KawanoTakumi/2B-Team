@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "EBullet.h"
 #include "EnemyAction.generated.h"
 
@@ -19,7 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -58,6 +60,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
 	float jump_Height = 400.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* particle = nullptr;
+
 	//スポーンさせたいオブジェクト
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SPAWN")
 	TSubclassOf<AActor> spawn_object;
@@ -73,10 +78,12 @@ public:
 		bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnPlayerEnded(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp);
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 	void Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void SpawnEffect(UNiagaraSystem* object);
 
 	void SetStatus();
 	void TurnToPlayer();
