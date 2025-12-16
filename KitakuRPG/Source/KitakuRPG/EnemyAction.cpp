@@ -51,6 +51,14 @@ void AEnemyAction::BeginPlay()
 void AEnemyAction::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (m_death_flag)
+	{
+		m_death_timer++;
+		if (m_death_timer >= 40.0f)
+			this->Destroy();
+	}
+
 	if (GetCharacterMovement() == nullptr)
 		UE_LOG(LogTemp, Warning, TEXT("Not Character movement"));
 	//攻撃のクールタイムを設定
@@ -108,6 +116,17 @@ void AEnemyAction::Tick(float DeltaTime)
 					GetWorldTimerManager().SetTimer(JumpTimerhandle, this, &AEnemyAction::ResetJump, jump_Cooldown, false);
 				});
 
+		}
+		else
+		{
+			//プレイヤーを見つけていない場合の移動
+			FVector loc = GetActorLocation();
+			loc += CurrentDirection * (speed * move_speed);
+			SetActorLocation(loc);
+			FRotator LookAtRotation = loc.Rotation();
+			LookAtRotation.Pitch = 0.0f;
+			LookAtRotation.Roll = 0.0f;
+			SetActorRotation(LookAtRotation);
 		}
 	}
 	//前後左右にランダムに移動する
@@ -178,7 +197,7 @@ float AEnemyAction::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		//ドロップアイテム
 		DropItem();
 		//オブジェクト削除
-		this->Destroy();
+		m_death_flag = true;
 	}
 	return GetDamage;
 }
@@ -237,6 +256,10 @@ void AEnemyAction::Attacked(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		hit = OtherActor;
 		ActionInterval(hit);
 	}
+	if (OtherActor->ActorHasTag("Water"))
+	{
+		this->Destroy();
+	}
 }
 //ダメージを生成
 void AEnemyAction::ActionInterval(AActor* actor)
@@ -253,6 +276,7 @@ void AEnemyAction::ActionInterval(AActor* actor)
 
 void AEnemyAction::ChooseNewDirection()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Set vec"));
 	// 前後左右の方向をランダムに選択
 	TArray<FVector> Directions = {
 		GetActorForwardVector(),     // 前

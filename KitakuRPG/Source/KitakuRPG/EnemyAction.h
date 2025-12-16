@@ -41,11 +41,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SPHEAR")
 	class USphereComponent* attackedSphere;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MOVE")
+	float move_speed = 3.0f;
 
 	//ジャンプできるかどうか（クールダウン判定）
 	bool CanJumpToPlayer = false;
-	
-
 	//ジャンプのクールダウン時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "JUMP")
 	float jump_Cooldown = 15.0f;
@@ -91,6 +91,8 @@ private:
 	float ChangeDirectionInterval = 2.0f;
 	float TimeSinceLastChange = 0.0f;
 	bool CanHitPlayer = false;//プレイヤーが当たったかどうか
+	bool m_death_flag = false;
+	float m_death_timer = 0.0f;
 	void ChooseNewDirection();
 	class AMyPlayCharacter* CPlayer;
 	bool CanAttack = false;//攻撃できるかどうか

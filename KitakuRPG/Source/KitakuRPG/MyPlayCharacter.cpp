@@ -69,31 +69,34 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	//ウィジェット更新
 	if (HUDwidget)
 	{
-		HUDwidget->UpdateHPBar(g_player_hp, g_player_max_hp);
-		HUDwidget->UpdateLevel(g_player_level);
+		HUDwidget->UpdateHPBar(m_player_hp, m_player_max_hp);
+		HUDwidget->UpdateLevel(m_player_level);
 	}
 
 	//攻撃アニメーションの終了判定
-	if (FA)
+	if (m_attack_flag)
 	{
-		time++;
+		m_time++;
 		//パーティクルを発生させる
-		if (particle && hit_enemy && time == 40)
-			Hit_Effect();
+		if (m_hit_enemy && m_time == 40)
+		{
+			if(particle)
+				Hit_Effect();//エフェクト作成
+		}
 
-		if (time > 80)
+		if (m_time > 80)
 		{
 
-			time = 0;
-			FA = false;
+			m_time = 0;
+			m_attack_flag = false;
 		}
 	}
 
 	//体力がなくなったら
-	if (g_player_hp < 0)
+	if (m_player_hp < 0)
 	{
 		//一時的に最終チェックポイントに移動
-		g_player_hp = 50;
+		m_player_hp = 50;
 		SetActorLocation(startPos);
 	}
 }
@@ -104,7 +107,7 @@ float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	AController* EventInstigator, AActor* DamageCauser)
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	g_player_hp -= GetDamage;
+	m_player_hp -= GetDamage;
 
 	return GetDamage;
 }
@@ -129,13 +132,13 @@ void AMyPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AMyPlayCharacter::MoveForward(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, value * g_player_speed);
+	AddMovementInput(Direction, value * m_player_speed);
 }
 //左右移動
 void AMyPlayCharacter::MoveRight(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, value * g_player_speed * 30);
+	AddMovementInput(Direction, value * m_player_speed * 30);
 }
 
 void AMyPlayCharacter::StartJump()
@@ -164,7 +167,7 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
-		g_player_hp -= 10;
+		m_player_hp -= 10;
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
@@ -181,60 +184,65 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 		OtherActor->Destroy();
 	}
 }
+void AMyPlayCharacter::SearchAttackRange()
+{
+	//攻撃範囲の判定
+	FVector Start = GetActorLocation();//検知開始場所
+	FVector ForwardVector = CameraComponent->GetForwardVector();//検知終了場所
+	FVector End = Start + ForwardVector * 130.0f;
+	FVector Box_Scale = { 100,100,100 };//あたり判定の箱を設定
+	FQuat rota = FQuat::Identity;
+
+	TArray<FHitResult> hit_result;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this); //自分自身は無視
+
+
+	bool bHit = GetWorld()->SweepMultiByChannel(hit_result, Start, End, rota, ECC_Pawn, FCollisionShape::MakeBox(Box_Scale), Params);
+	if (bHit)
+	{
+		for (auto& Hit : hit_result)
+		{
+			UPrimitiveComponent* Hit_cmp = Hit.GetComponent();
+			if (Hit_cmp && Hit_cmp->ComponentHasTag("Body"))
+			{
+				m_hit_enemy = true;
+				//敵にダメージを与える
+				UGameplayStatics::ApplyDamage(Hit.GetActor(), m_player_attack,
+					GetController(), this, UDamageType::StaticClass());
+			}
+			// 壊れるBOXかどうか判定
+			Abreakbox* HitBox = Cast<Abreakbox>(Hit.GetActor());
+			if (HitBox)
+			{
+				HitBox->OnHitByPlayer(m_player_attack); // プレイヤーの攻撃力を渡す
+			}
+		}
+	}
+
+}
+
 //攻撃
 void AMyPlayCharacter::Attack()
 {
-	if (!FA)
+	if (!m_attack_flag)
 	{
 		//攻撃アニメーションを再生
 		if (AttackMontage && GetMesh() && GetMesh()->GetAnimInstance())
 		{
 			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
-			FA = true;
+			m_attack_flag = true;
 		}
-
-		//攻撃範囲の判定
-		FVector Start = GetActorLocation();//検知開始場所
-		FVector ForwardVector = CameraComponent->GetForwardVector();//検知終了場所
-		FVector End = Start + ForwardVector * 130.0f;
-		FVector Box_Scale = {100,100,100};//あたり判定の箱を設定
-		FQuat rota = FQuat::Identity;
-
-		TArray<FHitResult> hit_result;
-		FCollisionQueryParams Params;
-		Params.AddIgnoredActor(this); //自分自身は無視
-
-
-		bool bHit = GetWorld()->SweepMultiByChannel(hit_result, Start, End, rota, ECC_Pawn, FCollisionShape::MakeBox(Box_Scale),Params);
-		if (bHit)
-		{
-			for (auto& Hit : hit_result)
-			{
-				UPrimitiveComponent* Hit_cmp = Hit.GetComponent();
-				if (Hit_cmp && Hit_cmp->ComponentHasTag("Body"))
-				{
-					hit_enemy = true;
-					//敵にダメージを与える
-					UGameplayStatics::ApplyDamage(Hit.GetActor(), g_player_attack,
-						GetController(), this, UDamageType::StaticClass());
-				}
-				// 壊れるBOXかどうか判定
-				Abreakbox* HitBox = Cast<Abreakbox>(Hit.GetActor());
-				if (HitBox)
-				{
-					HitBox->OnHitByPlayer(g_player_attack); // プレイヤーの攻撃力を渡す
-				}
-			}
-		}
+		SearchAttackRange();//攻撃範囲を設定
 	}
 }
 //ダメージ取得(TakeDamageの代替)
 void AMyPlayCharacter::GetDamage(int damage)
 {
 	//攻撃力0あるいは体力0ならダメージ0として処理
-	if (damage < 0 || g_player_hp < 0)return;
-	UE_LOG(LogTemp, Warning, TEXT("Player HP : %f"), g_player_hp);
-	g_player_hp -= damage;
+	if (damage < 0 || m_player_hp < 0)return;
+	UE_LOG(LogTemp, Warning, TEXT("Player HP : %f"), m_player_hp);
+	m_player_hp -= damage;
 }
 //経験値獲得
 void AMyPlayCharacter::GetEXP(int EXP)
@@ -246,7 +254,7 @@ void AMyPlayCharacter::GetEXP(int EXP)
 //レベルアップ
 void AMyPlayCharacter::LevelUp()
 {
-	g_player_level++;
+	m_player_level++;
 	P_EXP = 0;
 	P_max_EXP = FMath::RoundToInt(P_max_EXP * 1.1f);//次のレベルまでの最大経験値量を指定
 	if (LevelWidget)
@@ -305,20 +313,20 @@ void AMyPlayCharacter::InputStatus()
 			value->Player_level = 1;
 		}
 	}
-	g_player_max_hp = value->Player_HP;;
-	g_player_hp = g_player_max_hp;
-    g_player_level = value->Player_level;
-	g_player_attack = value->Player_Attack;
-	g_player_speed = value->Player_Speed;
+	m_player_max_hp = value->Player_HP;;
+	m_player_hp = m_player_max_hp;
+    m_player_level = value->Player_level;
+	m_player_attack = value->Player_Attack;
+	m_player_speed = value->Player_Speed;
 }
 
 void AMyPlayCharacter::OutputStatus()
 {
 	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
 
-	value->Player_level = g_player_level;
-	value->Player_Attack = g_player_attack;
-	value->Player_Speed = g_player_speed;
+	value->Player_level = m_player_level;
+	value->Player_Attack = m_player_attack;
+	value->Player_Speed = m_player_speed;
 }
 
 //エフェクト関数
@@ -329,9 +337,9 @@ void AMyPlayCharacter::Hit_Effect()
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			GetWorld(),
 			particle,
-			GetActorLocation(),
+			GetActorLocation()+ GetActorForwardVector() * 150.0f,
 			GetActorRotation()
 		);
 	}
-	hit_enemy = false;
+	m_hit_enemy = false;
 }

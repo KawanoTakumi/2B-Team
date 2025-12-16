@@ -16,14 +16,14 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 	case EBuffType::AttackUp:
 	{
 		//攻撃アップ
-		Target->g_player_attack += buffType->Value;
+		Target->m_player_attack += buffType->Value;
 	}break;
 	case EBuffType::Heal:
 	{
 		// 1秒ごとに HealTick を呼び出す
 		if (Target)
 		{
-			Target->g_heal_by_time += buffType->Value;//自然回復力を強化
+			Target->m_heal_by_time += buffType->Value;//自然回復力を強化
 			FTimerDelegate HealDelegate;
 			HealDelegate.BindUFunction(this, FName("HealTick"), Target);
 			GetWorld()->GetTimerManager().SetTimer(HealTimer, HealDelegate, 1.0f, true);
@@ -32,12 +32,12 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 	case EBuffType::SpeedUp:
 	{
 		//スピードアップ
-		Target->g_player_speed += buffType->Value;
+		Target->m_player_speed += buffType->Value;
 	}break;
 	case EBuffType::SpeedDown:
 	{
 		//スピードダウン
-		Target->g_player_speed -= buffType->Value;
+		Target->m_player_speed -= buffType->Value;
 
 		FTimerDelegate SPEED_stop_delegate;
 		SPEED_stop_delegate.BindUFunction(this, FName("SPEED_downTick"), Target);
@@ -49,7 +49,7 @@ void UBuffEffectBase::ApplyEffect(AMyPlayCharacter* Target,UBuffDataBase* buffTy
 		//攻撃力ダウン
 		if (Target)
 		{
-			Target->g_player_attack -= buffType->Value;
+			Target->m_player_attack -= buffType->Value;
 			
 			FTimerDelegate ATK_stop_delegate;
 			ATK_stop_delegate.BindUFunction(this, FName("ATK_downTick"), Target);
@@ -83,26 +83,26 @@ void UBuffEffectBase::HealTick(AMyPlayCharacter* Target)
 {
 	if (!Target) return;
 
-	Target->g_player_hp = FMath::Clamp(Target->g_player_hp + Target->g_heal_by_time, 0.0f, Target->g_player_max_hp);
+	Target->m_player_hp = FMath::Clamp(Target->m_player_hp + Target->m_heal_by_time, 0.0f, Target->m_player_max_hp);
 }
 //毒処理
 void UBuffEffectBase::PoisonTick(AMyPlayCharacter* Target, UBuffDataBase* base)
 {
 	if (!Target) return;
-	if(Target->g_player_hp > 0)
-	Target->g_player_hp = FMath::Clamp(Target->g_player_hp - base->Value,0.0f,Target->g_player_max_hp);
+	if(Target->m_player_hp > 0)
+	Target->m_player_hp = FMath::Clamp(Target->m_player_hp - base->Value,0.0f,Target->m_player_max_hp);
 }
 //攻撃ダウン処理
 void UBuffEffectBase::ATK_downTick(AMyPlayCharacter* Target, UBuffDataBase* base)
 {
 	GetWorld()->GetTimerManager().ClearTimer(ATK_down_Timer);
-	Target->g_player_attack += base->Value;
+	Target->m_player_attack += base->Value;
 }
 //スピードダウン処理
 void UBuffEffectBase::SPEED_downTick(AMyPlayCharacter* Target, UBuffDataBase* base)
 {
 	GetWorld()->GetTimerManager().ClearTimer(SPEED_down_Timer);
-	Target->g_player_speed += base->Value;
+	Target->m_player_speed += base->Value;
 }
 void UBuffEffectBase::StopPoisonTimer()
 {

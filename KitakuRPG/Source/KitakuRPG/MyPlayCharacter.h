@@ -26,7 +26,6 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 
-
 public:	
 	virtual void Tick(float DeltaTime) override;
 
@@ -50,38 +49,40 @@ public:
 	UPROPERTY()
 	int keyCount = 0;
 	//ステータス
-	int g_player_attack = 1;
-	int g_player_max_hp = 1;
-	int g_player_level = 1;
-	float g_player_hp = 1;
-	float g_player_speed = 1;
-	float g_heal_by_time = 0;//自然回復力
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "STATUS")
+	int m_player_attack = 1;
+	int m_player_max_hp = 1;
+	int m_player_level = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "STATUS")
+	float m_player_hp = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "STATUS")
+	float m_player_speed = 1;
+	float m_heal_by_time = 0;//自然回復力
 	int P_EXP = 1;
 	int P_max_EXP = 30;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FLAG")
-	bool FA = false;
-	bool hit_enemy = false;
-	int time = 0;
+	bool m_attack_flag = false;
+	bool m_hit_enemy = false;
+	int m_time = 0;
 	//初期位置
 	FVector startPos;
 	
 	//ステータス読み込み
 	class UStatusComponent* Status;
-
 	void InputStatus();
 	void OutputStatus();
 
 	UFUNCTION()
-	void MoveForward(float value);
+	void MoveForward(float value);//前後移動
 
 	UFUNCTION()
-	void MoveRight(float Value);
+	void MoveRight(float Value);//左右移動
 
 	UFUNCTION()
-	void StartJump();
+	void StartJump();//ジャンプ開始
 
 	UFUNCTION()
-	void StopJump();
+	void StopJump();//ジャンプ終了
 
 	//マウスX軸回転
 	UFUNCTION()
@@ -97,6 +98,7 @@ public:
 	//攻撃
 	UFUNCTION()
 	void Attack();
+	void SearchAttackRange();
 	//ダメージ取得
 	UFUNCTION()
 	void GetDamage(int damage);
