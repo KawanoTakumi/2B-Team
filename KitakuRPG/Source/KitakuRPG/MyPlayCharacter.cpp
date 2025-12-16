@@ -97,7 +97,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	{
 		//一時的に最終チェックポイントに移動
 		m_player_hp = 50;
-		SetActorLocation(startPos);
+		UGameplayStatics::OpenLevel(this, FName("Title"));
 	}
 }
 
@@ -174,11 +174,11 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 	{
 		//たいまつの場合
 		torchCount++;
+		Hit_Effect();
 		OtherActor->Destroy();//拾ったら削除する
 	}
 	if (OtherActor && OtherActor->ActorHasTag("KEY"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("aaa"));
 		//鍵の場合
 		keyCount++;
 		OtherActor->Destroy();

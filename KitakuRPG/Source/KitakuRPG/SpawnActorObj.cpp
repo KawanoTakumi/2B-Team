@@ -31,11 +31,11 @@ void ASpawnActorObj::BeginPlay()
 void ASpawnActorObj::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (m_spawn_timer > 0)
-		m_spawn_timer -= DeltaTime;
+	if (m_spawn_timer > 0 && !Enemy)
+		m_spawn_timer-= DeltaTime;
 	else
 	{
-		Spawn_Ac();
+		UE_LOG(LogTemp,Warning, TEXT("Cam Spawn Actor"));
 	}
 }
 
@@ -43,8 +43,12 @@ void ASpawnActorObj::Tick(float DeltaTime)
 void ASpawnActorObj::ASpawn(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-	m_can_spawn_actor = true;
+	if (OtherActor->ActorHasTag("Player")&& m_spawn_timer < 0)
+	{
+		m_can_spawn_actor = true;
+		Spawn_Ac();
+		m_spawn_timer = 20.0f;
+	}
 }
 void ASpawnActorObj::ADeleteSpawn(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -65,7 +69,7 @@ void ASpawnActorObj::Spawn_Ac()
 		FVector SpawnLocation = GetActorLocation();
 		SpawnLocation += GetActorUpVector() * 100.0f;
 		FActorSpawnParameters param;
-		AEnemyAction* Enemy = GetWorld()->SpawnActor<AEnemyAction>(spawn_object, SpawnLocation, SpawnRotation, param);
+		Enemy = GetWorld()->SpawnActor<AEnemyAction>(spawn_object, SpawnLocation, SpawnRotation, param);
 		if (Enemy)
 		{
 			Enemy->SpawnDefaultController();

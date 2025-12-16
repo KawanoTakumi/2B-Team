@@ -51,4 +51,5 @@ public:
 private:
 	bool m_can_spawn_actor = true;
 	float  m_spawn_timer = spawn_interval;
+	AEnemyAction* Enemy;
 };
