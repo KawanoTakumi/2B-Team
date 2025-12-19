@@ -29,5 +29,8 @@ private:
 	UFUNCTION()
 	void OnButtonQuitClicked();
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NAME")
+	FString name;
 };
 
