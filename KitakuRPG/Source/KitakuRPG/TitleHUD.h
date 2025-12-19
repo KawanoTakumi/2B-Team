@@ -19,9 +19,10 @@ protected:
 
 public:
 	void CloseTitle();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	TSubclassOf<class UUserWidget> WidgetClass;
 
 private:
-	TSubclassOf<class UUserWidget> WidgetClass;
 
 	UPROPERTY()
 	UUserWidget* UserWidget;
