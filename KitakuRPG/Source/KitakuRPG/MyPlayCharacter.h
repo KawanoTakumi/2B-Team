@@ -125,6 +125,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget>LevelWidget;
+
 	//パーティクル
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	UNiagaraSystem* particle;

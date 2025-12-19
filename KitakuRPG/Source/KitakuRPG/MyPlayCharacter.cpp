@@ -96,8 +96,7 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 	if (m_player_hp < 0)
 	{
 		//一時的に最終チェックポイントに移動
-		m_player_hp = 50;
-		UGameplayStatics::OpenLevel(this, FName("Title"));
+		UGameplayStatics::OpenLevel(this, FName("GameOver"));
 	}
 }
 
