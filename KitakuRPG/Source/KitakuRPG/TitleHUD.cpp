@@ -5,11 +5,6 @@
 
 ATitleHUD::ATitleHUD()
 {
-	//static ConstructorHelpers::FClassFinder<UUserWidget> WidgetBPClass(TEXT("/Game/egawa/UI/BPW_TitleMenu"));
-	//if (WidgetBPClass.Succeeded())
-	//{
-	//	WidgetClass = WidgetBPClass.Class;
-	//}
 }
 
 void ATitleHUD::BeginPlay()
