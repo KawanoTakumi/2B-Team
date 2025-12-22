@@ -4,10 +4,13 @@
 #include "LevelUpWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyPlayCharacter.h"
+#include "GameInstanceValue.h"
+
 
 //ƒoƒt‘I‘ğ‚ÉŒÄ‚Ô
 void ULevelUpWidget::OnBuffSelected()
 {
+
     //SE‚ğÄ¶
     if(hit_se)
         UGameplayStatics::PlaySound2D(this, hit_se);

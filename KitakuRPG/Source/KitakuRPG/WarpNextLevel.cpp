@@ -3,11 +3,11 @@
 
 #include "WarpNextLevel.h"
 #include "Components/StaticMeshComponent.h"//スタティックメッシュ作成に必要
-#include "GameInstanceValue.h"
 #include "Components/BoxComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyPlayCharacter.h"
+#include "GameInstanceValue.h"
 
 // Sets default values
 AWarpNextLevel::AWarpNextLevel()
@@ -63,8 +63,6 @@ void AWarpNextLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 
 void AWarpNextLevel::SetNextlevelName(const FString& name)
 {
-	FString CurrentLevel = GetWorld()->GetMapName();
-	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
-	value->levelname = CurrentLevel;
+
 	UGameplayStatics::OpenLevel(this, FName(*name));
 }

@@ -45,6 +45,9 @@ void AMyPlayCharacter::BeginPlay()
 	Super::BeginPlay();
 	startPos = GetActorLocation();//最初の位置を取得
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyPlayCharacter::OnCapsuleBeginOverlap);
+	FString CurrentLevel = GetWorld()->GetCurrentLevel()->GetOutermost()->GetName();
+	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
+	value->levelname = CurrentLevel;
 
 	Status = this->FindComponentByClass<UStatusComponent>();
 	//ステータス読み込み

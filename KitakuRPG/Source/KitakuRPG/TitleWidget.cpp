@@ -30,6 +30,7 @@ void UTitleWidget::OnButtonPlayClicked()
 	PlayerController->bShowMouseCursor = false;
 	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
 	name = value->levelname;
+	UE_LOG(LogTemp, Warning, TEXT("%s"),*name);
 	UGameplayStatics::OpenLevel(this, FName(name));
 }
 
