@@ -40,7 +40,8 @@ public:
 	//パーティクル
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	UNiagaraSystem* particle = nullptr;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* break_se;
 	
 	//プレイヤー索敵、オブジェクト破壊関数
 	UFUNCTION()

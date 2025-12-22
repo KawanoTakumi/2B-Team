@@ -3,6 +3,7 @@
 
 #include "PlantWall.h"
 #include "Components/StaticMeshComponent.h"//スタティックメッシュ作成に必要
+#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"//球体作成に必要
 #include "GameFramework/Character.h"
 #include "MyPlayCharacter.h"
@@ -55,6 +56,8 @@ void APlantWall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 				}
 
 				UE_LOG(LogTemp, Warning, TEXT("player hit"));
+				if (break_se)
+					UGameplayStatics::PlaySound2D(this, break_se);
 				TargetPlayer->torchCount--;//アイテムの所持数を０にする
 				this->Destroy();
 			}

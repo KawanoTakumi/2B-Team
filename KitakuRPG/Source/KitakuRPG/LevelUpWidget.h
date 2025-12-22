@@ -24,4 +24,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray <class UBuffDataBase* > BuffOptions;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* hit_se;
 };

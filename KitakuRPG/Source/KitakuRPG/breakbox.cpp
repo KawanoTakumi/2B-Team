@@ -3,6 +3,7 @@
 
 #include "breakbox.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
 // Sets default values
@@ -45,6 +46,8 @@ void Abreakbox::Tick(float DeltaTime)
 void Abreakbox::OnHitByPlayer(float Damage)
 {
 	BoxHP -= Damage;
+	if(break_se)
+		UGameplayStatics::PlaySound2D(this, break_se);
 	SpawnEffect();
 	if (BoxHP <= 0)
 	{

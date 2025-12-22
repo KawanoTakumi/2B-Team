@@ -32,7 +32,8 @@ public:
 	// HPÇéùÇΩÇπÇÈ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
 	float BoxHP = 1.0f;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* break_se;
 
 	UFUNCTION()
 	void SpawnEffect();

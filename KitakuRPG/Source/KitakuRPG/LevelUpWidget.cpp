@@ -8,6 +8,9 @@
 //バフ選択時に呼ぶ
 void ULevelUpWidget::OnBuffSelected()
 {
+    //SEを再生
+    if(hit_se)
+        UGameplayStatics::PlaySound2D(this, hit_se);
 	//ゲームを再開
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	//入力モードをUIのみにする

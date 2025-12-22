@@ -230,6 +230,9 @@ void AMyPlayCharacter::Attack()
 		if (AttackMontage && GetMesh() && GetMesh()->GetAnimInstance())
 		{
 			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+			//攻撃サウンド再生
+			if (attack_se)
+				UGameplayStatics::PlaySound2D(this, attack_se);
 			m_attack_flag = true;
 		}
 		SearchAttackRange();//攻撃範囲を設定
