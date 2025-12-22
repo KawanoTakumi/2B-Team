@@ -27,5 +27,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerData")
 	float Player_Speed;
-
+	UPROPERTY(BlueprintReadWrite)
+	FString levelname;
 };

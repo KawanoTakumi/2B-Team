@@ -9,9 +9,28 @@
 /**
  * 
  */
+class UButton;
 UCLASS()
 class KITAKURPG_API UTitleWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+protected:
+	void NativeConstruct() override;
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ButtonPlay;
+
+	UFUNCTION()
+	void OnButtonPlayClicked();
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* ButtonQuit;
+
+	UFUNCTION()
+	void OnButtonQuitClicked();
+
+public:
+	FString name;
+
 };

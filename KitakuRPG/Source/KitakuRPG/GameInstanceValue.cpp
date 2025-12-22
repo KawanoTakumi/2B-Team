@@ -10,4 +10,5 @@ void UGameInstanceValue::Init()
 	Player_Attack = 1;
 	Player_level = 1;
 	Player_Speed = 1.0f;
+	levelname = "Stage1_2";
 }
