@@ -28,10 +28,8 @@ void UTitleWidget::OnButtonPlayClicked()
 	FInputModeGameOnly InputMode;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = false;
-	if (UGameInstanceValue* GI = Cast<UGameInstanceValue>(UGameplayStatics::GetGameInstance(GetWorld())))
-	{
-		name = GI->levelname;
-	}
+	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
+	name = value->levelname;
 	UGameplayStatics::OpenLevel(this, FName(name));
 }
 

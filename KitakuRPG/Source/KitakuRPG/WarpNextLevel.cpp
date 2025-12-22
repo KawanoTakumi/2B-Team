@@ -64,10 +64,7 @@ void AWarpNextLevel::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 void AWarpNextLevel::SetNextlevelName(const FString& name)
 {
 	FString CurrentLevel = GetWorld()->GetMapName();
-	if (UGameInstanceValue* GI = Cast<UGameInstanceValue>(UGameplayStatics::GetGameInstance(GetWorld())))
-	{
-		GI->levelname = CurrentLevel;
-	}
-
+	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
+	value->levelname = CurrentLevel;
 	UGameplayStatics::OpenLevel(this, FName(*name));
 }
