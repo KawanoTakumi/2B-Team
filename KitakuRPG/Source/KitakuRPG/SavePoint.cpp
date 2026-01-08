@@ -63,6 +63,7 @@ void ASavePoint::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 			//アクターが設定されていたらそれを破壊する
 			if (BreakActor != nullptr)
 				BreakActor->Destroy();
+			this->Destroy();
 		}
 	}
 }
