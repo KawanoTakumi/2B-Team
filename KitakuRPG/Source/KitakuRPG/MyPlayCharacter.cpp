@@ -209,6 +209,7 @@ void AMyPlayCharacter::SearchAttackRange()
 			if (Hit_cmp && Hit_cmp->ComponentHasTag("Body"))
 			{
 				m_hit_enemy = true;
+
 				//敵にダメージを与える
 				UGameplayStatics::ApplyDamage(Hit.GetActor(), m_player_attack,
 					GetController(), this, UDamageType::StaticClass());
@@ -234,8 +235,12 @@ void AMyPlayCharacter::Attack()
 		{
 			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 			//攻撃サウンド再生
-			if (attack_se)
-				UGameplayStatics::PlaySound2D(this, attack_se);
+			if (m_hit_enemy)
+			{
+				if (attack_se)
+					UGameplayStatics::PlaySound2D(this, attack_se);
+			}
+
 			m_attack_flag = true;
 		}
 		SearchAttackRange();//攻撃範囲を設定
