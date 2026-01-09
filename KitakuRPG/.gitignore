@@ -50,6 +50,7 @@ SourceArt/**/*.tga
 Binaries/*
 Plugins/**/Binaries/*
 Content/egawa/Fab/Wooden_House/*
+Content/StarterContent/*
 
 # Builds
 Build/*
