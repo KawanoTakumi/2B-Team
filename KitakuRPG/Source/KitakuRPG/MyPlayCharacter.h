@@ -64,6 +64,7 @@ public:
 	bool m_attack_flag = false;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "SE")
 	USoundBase* attack_se;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
 	USoundBase* Attack_1_se;
 
 
