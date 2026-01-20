@@ -84,9 +84,11 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 		if (m_hit_enemy && m_time == 40)
 		{
 			if(particle)
-				Hit_Effect();//エフェクト作成				
-			if (Attack_1_se)
-			UGameplayStatics::PlaySound2D(this, Attack_1_se);
+				Hit_Effect();//エフェクト作成		
+
+			//SEを発生させる
+			if (attack_sound)
+				UGameplayStatics::PlaySoundAtLocation(this, attack_sound, GetActorLocation());
 
 		}
 

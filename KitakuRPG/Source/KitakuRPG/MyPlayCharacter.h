@@ -18,8 +18,6 @@ class KITAKURPG_API AMyPlayCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-
-
 protected:
 	AMyPlayCharacter();
 
@@ -62,10 +60,6 @@ public:
 	int P_max_EXP = 30;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FLAG")
 	bool m_attack_flag = false;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "SE")
-	USoundBase* attack_se;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
-	USoundBase* Attack_1_se;
 
 
 	bool m_hit_enemy = false;
@@ -136,5 +130,8 @@ public:
 	//パーティクル
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	UNiagaraSystem* particle;
-
+	
+	//SE
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* attack_sound;
 };
