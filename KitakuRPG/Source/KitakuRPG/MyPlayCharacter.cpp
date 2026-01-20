@@ -86,9 +86,11 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 		if (m_hit_enemy && m_time == 40)
 		{
 			if(particle)
-				Hit_Effect();//エフェクト作成				
-			if (Attack_1_se)
-			UGameplayStatics::PlaySound2D(this, Attack_1_se);
+				Hit_Effect();//エフェクト作成		
+
+			//SEを発生させる
+			if (attack_sound)
+				UGameplayStatics::PlaySoundAtLocation(this, attack_sound, GetActorLocation());
 
 		}
 
@@ -174,7 +176,7 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
-		m_player_hp -= 10;
+		m_player_hp -= take_damage;
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
@@ -214,6 +216,8 @@ void AMyPlayCharacter::SearchAttackRange()
 			if (Hit_cmp && Hit_cmp->ComponentHasTag("Body"))
 			{
 				m_hit_enemy = true;
+
+				//攻撃時のSEを再生
 
 				//敵にダメージを与える
 				UGameplayStatics::ApplyDamage(Hit.GetActor(), m_player_attack,

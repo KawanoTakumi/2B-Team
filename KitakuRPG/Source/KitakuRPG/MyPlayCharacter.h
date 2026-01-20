@@ -12,14 +12,11 @@
 #include "MyPlayHUD.h"
 #include "MyPlayCharacter.generated.h"
 
-class USpeakWidget;
 
 UCLASS()
 class KITAKURPG_API AMyPlayCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-
 
 protected:
 	AMyPlayCharacter();
@@ -63,14 +60,11 @@ public:
 	int P_max_EXP = 30;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FLAG")
 	bool m_attack_flag = false;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "SE")
-	USoundBase* attack_se;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
-	USoundBase* Attack_1_se;
 
 
 	bool m_hit_enemy = false;
 	int m_time = 0;
+	int take_damage = 10;//落下時のダメージ量
 	//初期位置
 	FVector startPos;
 	
@@ -136,6 +130,8 @@ public:
 	//パーティクル
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	UNiagaraSystem* particle;
-
-
+	
+	//SE
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* attack_sound;
 };
