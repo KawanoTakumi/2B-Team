@@ -12,6 +12,7 @@
 #include "MyPlayHUD.h"
 #include "MyPlayCharacter.generated.h"
 
+class USpeakWidget;
 
 UCLASS()
 class KITAKURPG_API AMyPlayCharacter : public ACharacter
@@ -135,5 +136,6 @@ public:
 	//パーティクル
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	UNiagaraSystem* particle;
+
 
 };

@@ -54,6 +54,8 @@ void AMyPlayCharacter::BeginPlay()
 	InputStatus();
 	//HUD取得
 	HUDwidget = Cast<AMyPlayHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+
 }
 
 // Called every frame
