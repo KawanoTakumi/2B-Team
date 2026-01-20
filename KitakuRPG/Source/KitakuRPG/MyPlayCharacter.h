@@ -70,6 +70,7 @@ public:
 
 	bool m_hit_enemy = false;
 	int m_time = 0;
+	int take_damage = 10;//落下時のダメージ量
 	//初期位置
 	FVector startPos;
 	
