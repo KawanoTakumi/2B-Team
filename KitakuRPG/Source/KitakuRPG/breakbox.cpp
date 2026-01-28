@@ -18,11 +18,11 @@ Abreakbox::Abreakbox()
 
 
 	// メッシュを設定（プロジェクトにインポート済みのものを使う）
-		static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/WoodenBox.WoodenBox"));
-	if (MeshAsset.Succeeded())
-	{
-		BoxMesh->SetStaticMesh(MeshAsset.Object);
-	}
+		//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/WoodenBox.WoodenBox"));
+	//if (BoxMesh)
+	//{
+	//	BoxMesh->SetStaticMesh(MeshAsset.Object);
+	//}
 
 	// コリジョン設定（攻撃判定用）
 	BoxMesh->SetCollisionProfileName(TEXT("BlockAll"));
