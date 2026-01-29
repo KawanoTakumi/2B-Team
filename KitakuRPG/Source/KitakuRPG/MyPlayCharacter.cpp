@@ -147,7 +147,9 @@ void AMyPlayCharacter::MoveForward(float value)
 void AMyPlayCharacter::MoveRight(float value)
 {
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, value * m_player_speed * 30);
+	//AddMovementInput(Direction, value * m_player_speed * 30);
+	AddMovementInput(Direction, value * m_player_speed);
+
 }
 
 void AMyPlayCharacter::StartJump()
