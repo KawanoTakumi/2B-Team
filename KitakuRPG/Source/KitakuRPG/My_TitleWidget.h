@@ -29,8 +29,13 @@ private:
 	UFUNCTION()
 	void OnButtonQuitClicked();
 
+	UFUNCTION()
+	void OnDelayedOpenLevel();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NAME")
 	FString name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	USoundBase* hit;
 };
 

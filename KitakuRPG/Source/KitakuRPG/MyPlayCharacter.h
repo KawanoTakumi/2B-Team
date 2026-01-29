@@ -17,13 +17,11 @@ UCLASS()
 class KITAKURPG_API AMyPlayCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
 protected:
 	AMyPlayCharacter();
 
 protected:
 	virtual void BeginPlay() override;
-
 public:	
 	virtual void Tick(float DeltaTime) override;
 
@@ -132,6 +130,18 @@ public:
 	UNiagaraSystem* particle;
 	
 	//SE
+
+	//çUåÇ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
 	USoundBase* attack_sound;
+
+	//à⁄ìÆ
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* move_sound;
+	//óéâ∫
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* jump_sound;
+	//É_ÉÅÅ[ÉW
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SE")
+	USoundBase* damage_sound;
 };

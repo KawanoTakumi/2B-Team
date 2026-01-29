@@ -88,9 +88,6 @@ void AMyPlayCharacter::Tick(float DeltaTime)
 			if(particle)
 				Hit_Effect();//エフェクト作成		
 
-			//SEを発生させる
-			if (attack_sound)
-				UGameplayStatics::PlaySoundAtLocation(this, attack_sound, GetActorLocation());
 
 		}
 
@@ -117,7 +114,8 @@ float AMyPlayCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 {
 	float GetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	m_player_hp -= GetDamage;
-
+	if (damage_sound)
+		UGameplayStatics::PlaySound2D(this, damage_sound);
 	return GetDamage;
 }
 
@@ -149,12 +147,12 @@ void AMyPlayCharacter::MoveRight(float value)
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	//AddMovementInput(Direction, value * m_player_speed * 30);
 	AddMovementInput(Direction, value * m_player_speed);
-
 }
 
 void AMyPlayCharacter::StartJump()
 {
 	bPressedJump = true;
+
 }
 
 void AMyPlayCharacter::StopJump()
@@ -179,6 +177,8 @@ void AMyPlayCharacter::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp
 	if (OtherActor && OtherActor->ActorHasTag("Water"))
 	{
 		m_player_hp -= take_damage;
+		if (damage_sound)
+			UGameplayStatics::PlaySound2D(this, damage_sound);
 		SetActorLocation(startPos);
 	}
 	else if (OtherActor && OtherActor->ActorHasTag("Torch"))
@@ -219,7 +219,6 @@ void AMyPlayCharacter::SearchAttackRange()
 			{
 				m_hit_enemy = true;
 
-				//攻撃時のSEを再生
 
 				//敵にダメージを与える
 				UGameplayStatics::ApplyDamage(Hit.GetActor(), m_player_attack,
@@ -241,18 +240,14 @@ void AMyPlayCharacter::Attack()
 {
 	if (!m_attack_flag)
 	{
+		//攻撃サウンド再生
+		if (attack_sound)
+			UGameplayStatics::PlaySound2D(this, attack_sound);
+
 		//攻撃アニメーションを再生
 		if (AttackMontage && GetMesh() && GetMesh()->GetAnimInstance())
 		{
 			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
-			//攻撃サウンド再生
-			if (m_hit_enemy)
-			{
-				//if (attack_se)
-					//UGameplayStatics::PlaySound2D(this, attack_se);
-
-				//Attack_1_se
-			}
 
 			m_attack_flag = true;
 		}
@@ -326,7 +321,7 @@ void AMyPlayCharacter::InputStatus()
 	UGameInstanceValue* value = Cast<UGameInstanceValue>(GetWorld()->GetGameInstance());
 	if (value == nullptr)return;
 	//初期ステージのみステータスデータを保存
-	if (stage_name == "Stage1_2")
+	if (stage_name == "Stage1_2"|| stage_name == "tutorial")
 	{
 		if (Status)
 		{

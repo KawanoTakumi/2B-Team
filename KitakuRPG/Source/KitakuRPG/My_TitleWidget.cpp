@@ -18,15 +18,21 @@ void UMy_TitleWidget::NativeConstruct()
 
 void UMy_TitleWidget::OnButtonPlayClicked()
 {
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-	RemoveFromParent();
+	if (hit)
+		UGameplayStatics::PlaySound2D(this, hit);
 
-	FInputModeGameOnly InputMode;
-	PlayerController->SetInputMode(InputMode);
-	PlayerController->bShowMouseCursor = false;
 
-	UGameplayStatics::OpenLevel(this, FName(name));
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(
+		TimerHandle,
+		this,
+		&UMy_TitleWidget::OnDelayedOpenLevel,
+		0.3f,   // ’x‰„ŽžŠÔ
+		false
+	);
+
+
 }
 
 void UMy_TitleWidget::OnButtonQuitClicked()
@@ -37,4 +43,18 @@ void UMy_TitleWidget::OnButtonQuitClicked()
 		// ƒQ[ƒ€‚ðI—¹‚·‚é
 		UKismetSystemLibrary::QuitGame(GetWorld(), PlayerController, EQuitPreference::Quit, false);
 	}
+}
+
+void UMy_TitleWidget::OnDelayedOpenLevel()
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	RemoveFromParent();
+
+	FInputModeGameOnly InputMode;
+	PlayerController->SetInputMode(InputMode);
+	PlayerController->bShowMouseCursor = false;
+
+
+	UGameplayStatics::OpenLevel(this, FName(name));
+
 }
